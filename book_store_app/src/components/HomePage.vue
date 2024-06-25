@@ -3,6 +3,6 @@
 </script>
 
 <template>
-<h1>Home Component</h1>
+<h1 style="color: white;">Home Component</h1>
 
 </template>
