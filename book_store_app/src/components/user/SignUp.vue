@@ -1,31 +1,41 @@
-<script>
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import imageSrc from '../../assets/images/cartImg.png';
-import Login from '@/components/user/Login.vue'
-export default {
-  components:{
-    Login
-  },
-  data: () => ({
-    tab: null,
-    visible: false,
-    imgSrc: imageSrc,
-    changeColor: false,
-    rules: {
-      required: value => !!value || 'Field is required',
-    },
-  }),
-  methods:{
-    login(){
-      this.changeColor=!this.changeColor
-      this.$router.push('/login')
-    },
-    signup(){
-      this.changeColor=!this.changeColor
-      this.$router.push('/signup')
-    }
-  }
+import Login from '@/components/user/Login.vue';
+
+const tab = ref<number | null>(null);
+const tabs = ref(2);
+const visible = ref(false);
+const imgSrc = ref(imageSrc);
+const changeColor = ref(false);
+
+const nameRules = [
+  (value: string) => !!value || "Enter Full Name",
+  (value: string) => (value && value.length >= 5) || "Please Enter Full Name",
+];
+
+const passwordRules = [
+  (value: string) => !!value || "Enter password.",
+  (value: string) => /(?=.*[a-z])/.test(value) || "At least one lowercase letter.",
+  (value: string) => /(?=.*[A-Z])/.test(value) || "At least one UPPERCASE letter.",
+  (value: string) => /(?=.*\d)/.test(value) || "At least one digit.",
+  (value: string) => /(?=.*[@$!%*?&])/.test(value) || "At least one special character.",
+  (value: string) => (value && value.length >= 8) || "Minimum 8 characters.",
+];
+
+const router = useRouter();
+const login = () => {
+  changeColor.value = !changeColor.value;
+  router.push('/login');
+};
+
+const signup = () => {
+  changeColor.value = !changeColor.value;
+  router.push('/signup');
 };
 </script>
+
 
 <template>
   <div class="outerDiv">
@@ -42,13 +52,14 @@ export default {
       </v-tabs>
 
       <v-tabs-window v-model="tab">
-        <v-tabs-window-item v-for="n in 3" :key="n" :value="n">
+        <v-tabs-window-item v-for="n in tabs" :key="n" :value="n">
           <v-container fluid>
             <v-row>
+              <Login v-show="n==1"/>
               <v-col class="inputs" v-show="n == 2">
                 <div>
                   <label for="name">Full Name</label>
-                  <v-text-field :rules="rules.required" variant="outlined"></v-text-field>
+                  <v-text-field :rules="nameRules" variant="outlined"></v-text-field>
                 </div>
                 <div>
                   <label for="name">Email Id</label>
@@ -68,7 +79,7 @@ export default {
                   <v-btn id="signupBtn" block>SIGNUP</v-btn>
                 </div>
               </v-col>
-               <Login v-show="n==1"/>
+               
             </v-row>
           </v-container>
         </v-tabs-window-item>
@@ -157,7 +168,6 @@ label {
   display: flex;
   justify-content: space-between;
 }
-
 
 .v-text-field .v-field--no-label input,
 .v-text-field .v-field--active input {
