@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import SignUp from '../components/user/SignUp.vue'
+import Login from '../components/user/Login.vue'
 </script>
 
 <template>
   <main>
-    <SignUp />
+    <Login />
   </main>
 </template>
