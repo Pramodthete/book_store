@@ -1,79 +1,48 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import imageSrc from '../../assets/images/cartImg.png';
 import Login from '@/components/user/Login.vue';
-
-const tab = ref<number | null>(null);
-const tabs = ref(2);
-const visible = ref(false);
-const imgSrc = ref(imageSrc);
-const changeColor = ref(false);
-
-const nameRules = [
-  (value: string) => !!value || "Enter Full Name",
-  (value: string) => (value && value.length >= 5) || "Please Enter Full Name",
-];
-
-const passwordRules = [
-  (value: string) => !!value || "Enter password.",
-  (value: string) => /(?=.*[a-z])/.test(value) || "At least one lowercase letter.",
-  (value: string) => /(?=.*[A-Z])/.test(value) || "At least one UPPERCASE letter.",
-  (value: string) => /(?=.*\d)/.test(value) || "At least one digit.",
-  (value: string) => /(?=.*[@$!%*?&])/.test(value) || "At least one special character.",
-  (value: string) => (value && value.length >= 8) || "Minimum 8 characters.",
-];
-
-const router = useRouter();
-const login = () => {
-  changeColor.value = !changeColor.value;
-  router.push('/login');
-};
-
-const signup = () => {
-  changeColor.value = !changeColor.value;
-  router.push('/signup');
-};
+import { useSignupStore } from '@/stores/signUp';
+const signupStore = useSignupStore()
 </script>
 
 
 <template>
   <div class="outerDiv">
     <div class="imgBox">
-      <img id="cartId" width="250" aspect-ratio="16/9" cover :src="imgSrc"></img>
+      <img id="cartId" width="250" aspect-ratio="16/9" cover :src="signupStore.imgSrc"></img>
       <div id="img-below-text"><b>ONLINE BOOK SHOPPING</b></div>
     </div>
     <v-card class="card-signup">
-      <v-tabs v-model="tab" align-tabs="center" color="#A03037">
-        <v-tab  @click="login" :value="1"><b
-            :class="{ 'login-btn': !changeColor, 'login-text': changeColor }" id="login-text">LOGIN</b> </v-tab>
-        <v-tab @click="signup" :value="2"><b
-            :class="{ 'login-btn': changeColor, 'signup-text': !changeColor }" id="signup-text">SIGNUP</b> </v-tab>
+      <v-tabs v-model="signupStore.tab" align-tabs="center" color="#A03037">
+        <v-tab  @click="signupStore.login" :value="1"><b
+            :class="{ 'login-btn': !signupStore.changeColor, 'login-text': signupStore.changeColor }" id="login-text">LOGIN</b> </v-tab>
+        <v-tab @click="signupStore.signup" :value="2"><b
+            :class="{ 'login-btn': signupStore.changeColor, 'signup-text': !signupStore.changeColor }" id="signup-text">SIGNUP</b> </v-tab>
       </v-tabs>
 
-      <v-tabs-window v-model="tab">
-        <v-tabs-window-item v-for="n in tabs" :key="n" :value="n">
+      <v-tabs-window v-model="signupStore.tab">
+        <v-tabs-window-item v-for="n in signupStore.tabs" :key="n" :value="n">
           <v-container fluid>
             <v-row>
               <Login v-show="n==1"/>
               <v-col class="inputs" v-show="n == 2">
                 <div>
                   <label for="name">Full Name</label>
-                  <v-text-field :rules="nameRules" variant="outlined"></v-text-field>
+                  <v-text-field :rules="signupStore.nameRules" variant="outlined"></v-text-field>
                 </div>
                 <div>
                   <label for="name">Email Id</label>
-                  <v-text-field variant="outlined"></v-text-field>
+                  <v-text-field :rules="signupStore.emailRules" variant="outlined"></v-text-field>
                 </div>
                 <div>
                   <label for="name">Password</label>
-                  <v-text-field :append-inner-icon="visible ? 'mdi-eye' : 'mdi-eye-off'"
-                    :type="visible ? 'text' : 'password'" @click:append-inner="visible = !visible"
+                  <v-text-field :append-inner-icon="signupStore.visible ? 'mdi-eye' : 'mdi-eye-off'"
+                  :rules="signupStore.passwordRules"
+                    :type="signupStore.visible ? 'text' : 'password'" @click:append-inner="signupStore.visible = !signupStore.visible"
                     variant="outlined"></v-text-field>
                 </div>
                 <div>
                   <label for="name">Mobile Number</label>
-                  <v-text-field variant="outlined"></v-text-field>
+                  <v-text-field :rules="signupStore.mobileRules" variant="outlined"></v-text-field>
                 </div>
                 <div>
                   <v-btn id="signupBtn" block>SIGNUP</v-btn>
