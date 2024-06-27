@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Home from '../components/user/SignUp.vue'
+import Home from '@/components/HomePage.vue'
 </script>
 
 <template>
@@ -7,3 +7,5 @@ import Home from '../components/user/SignUp.vue'
     <Home />
   </main>
 </template>
+<style scoped>
+</style>
