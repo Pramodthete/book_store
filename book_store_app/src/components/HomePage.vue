@@ -8,7 +8,7 @@
             <img src="@/assets/svgfiles/education.svg" alt="" />
           </div>
           <div class="bookstore-text">
-            <v-app-bar-title>Bookstore</v-app-bar-title>
+            <v-app-bar-title class="big-font">Bookstore</v-app-bar-title>
           </div>
           <div class="search">
             <v-text-field
@@ -24,30 +24,40 @@
             <v-btn icon class="end-btn1">
               <div class="item">
                 <v-icon>mdi-account-outline</v-icon>
-                <label>Profile</label>
+                <div class="font">Profile</div>
               </div>
             </v-btn>
             <v-btn icon class="end-btn2">
               <div class="item">
                 <v-icon>mdi-cart-outline</v-icon>
-                <label>Cart</label>
+                <div class="font">Cart</div>
               </div>
             </v-btn>
           </div>
       </v-app-bar>
 
-            <div style="display: flex;flex-wrap: wrap;gap: 5px;">
-                <div class="block"></div>
-                <div class="block"></div>
-                <div class="block"></div>
-                <div class="block"></div>
-                <div class="block"></div>
-                <div class="block"></div>
-                <div class="block"></div>
-                <div class="block"></div>
+            <div class="card" >
+                <div class="block" v-for="n in 19">
+                    <div class="image">
+                        <img src="../assets/images/dmmt.png" alt="">
+                    </div>
+                    <div class="content">
+                        <h3><b>Dont Make Me Think</b></h3>
+                        <div>By Steve Krug</div>
+                        <span class="rating" >4.5 <v-icon class="starIcon" icon="mdi-star"></v-icon>
+                        </span><span>(20)</span>
+                        <div>Rs. 1500 <span class="strikeAmount" >Rs. 2000</span></div>
+                    </div>
+                </div>
             </div>
     </v-layout>
+    <br>
+    <br>
+    <div>
+    <div class="footer">Copiright @ 2020. Bookstore Private Limited. All rights reserved</div>
+  </div>
   </v-card>
+  
 </template>
 
 <style scoped>
@@ -60,8 +70,12 @@
   text-transform: capitalize;
 }
 .bookstore-text {
-  margin-left: 1%;
-  padding-bottom: 5px;
+  margin-left: 8px;
+  padding-bottom: 8px;
+  
+}
+.big-font{
+    font-size: 300 ;
 }
 .search {
     display: flex;
@@ -88,6 +102,23 @@
 .imgbox {
   margin-left: 10%;
 }
+
+.card{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 60px;
+  padding:0rem 12rem;
+  padding-top: 20px;
+}
+.image{
+    background-color: #e7e2e2;
+    display: flex;
+    justify-content: center;
+}
+.image img{
+    width:109.4px;
+    height: 135px;
+}
 .end-btn {
   display: flex;
   gap: 0%;
@@ -95,6 +126,9 @@
 }
 .v-text-field .v-input__details {
     display: none !important;
+}
+.font{
+    font-size: small;
 }
 
 @media screen and (max-width: 600px) {
@@ -117,14 +151,41 @@
 }
 
 .block{
-    width: 300px;
-    height: 300px;
-    background-color: antiquewhite;
-    border: 1px solid red ;
+    width: 235px;
+    height: 275px;
+    border: 1px solid rgb(194, 193, 193) ;
 }
 .v-card--variant-elevated {
-    width: 97vw;
+    width: 99vw;
     max-width: 100vw !important;
-    max-height: 100vh !important;
+}
+.content{
+    padding-top: 4%;
+    padding-left: 6%;
+}
+.rating{
+  background-color: green;
+  color: white;
+  width: fit-content;
+  padding: 2px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+.starIcon{
+  font-size: small;
+  padding-bottom:1% ;
+}
+.strikeAmount{
+  text-decoration: line-through
+}
+
+.footer{
+  height: 50px;
+  background-color: black;
+  color: white;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
