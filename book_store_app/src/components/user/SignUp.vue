@@ -10,6 +10,7 @@ const signupStore = useSignupStore();
         <div>
           <label for="name">Full Name</label>
           <v-text-field
+            v-model="signupStore.name"
             :rules="signupStore.nameRules"
             variant="outlined"
           ></v-text-field>
@@ -17,6 +18,7 @@ const signupStore = useSignupStore();
         <div>
           <label for="name">Email Id</label>
           <v-text-field
+          v-model="signupStore.email"
             :rules="signupStore.emailRules"
             variant="outlined"
           ></v-text-field>
@@ -24,6 +26,7 @@ const signupStore = useSignupStore();
         <div>
           <label for="name">Password</label>
           <v-text-field
+          v-model="signupStore.password"
             :append-inner-icon="signupStore.visible ? 'mdi-eye' : 'mdi-eye-off'"
             :rules="signupStore.passwordRules"
             :type="signupStore.visible ? 'text' : 'password'"
@@ -34,12 +37,13 @@ const signupStore = useSignupStore();
         <div>
           <label for="name">Mobile Number</label>
           <v-text-field
+          v-model="signupStore.mobile"
             :rules="signupStore.mobileRules"
             variant="outlined"
           ></v-text-field>
         </div>
         <div>
-          <v-btn id="signupBtn" block>SIGNUP</v-btn>
+          <v-btn id="signupBtn" @click="signupStore.register" block>SIGNUP</v-btn>
         </div>
       </v-col>
     </v-row>

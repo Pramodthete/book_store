@@ -1,10 +1,13 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
+import { useRouter } from "vue-router";
+import { loginData } from "@/services/userService";
 
 export const useLoginStore = defineStore("login", () => {
   const visible = ref(false);
   const email = ref<string | null>(null);
   const password = ref<string | null>(null);
+  const router = useRouter(); 
 
   const emailRules = [
     (v: string) => !!v || "Email is required",
@@ -31,8 +34,7 @@ export const useLoginStore = defineStore("login", () => {
   const validateForm = () => {
     const formElement = form.value as any;
     console.log(formElement);
-
-    return formElement.validate();
+    return formElement !== null ? formElement : null;
   };
 
   const resetForm = () => {
@@ -41,13 +43,34 @@ export const useLoginStore = defineStore("login", () => {
   };
 
   const login = () => {
-    if (validateForm()) {
-      console.log("Form is valid");
-      resetForm();
-    } else {
-      console.log("Form is invalid");
-    }
+    console.log("Form is valid");
+    const data: Object = {
+      email: email.value,
+      password: password.value,
+    };
+    console.log("data==>", data);
+
+    loginData(data)
+      .then((res) => {
+        localStorage.setItem("token", res.data.result.accessToken);
+        console.log(res);
+        resetForm();
+        router.push("/"); 
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
-  return { visible, email, password,emailRules,passwordRules,form,validateForm,resetForm,login };
+  return {
+    visible,
+    email,
+    password,
+    emailRules,
+    passwordRules,
+    form,
+    validateForm,
+    resetForm,
+    login,
+  };
 });
