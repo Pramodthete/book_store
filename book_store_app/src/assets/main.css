@@ -1,16 +1,15 @@
 @import './base.css';
 
 #app {
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 0;
   font-weight: normal;
-  padding-top:5%;
-  padding-right: 1%;
+  padding-top:4%;
 }
-body {
+/* body {
   width: fit-content;
-}
+} */
 
 a,
 .green {
@@ -29,8 +28,9 @@ a,
 @media (min-width: 600px) {
   body {
     display: flex;
+    justify-content: center;
     place-items: center;
-    background-color: rgb(243, 241, 241);
+    background-color: #b0b0b0;
   }
 
   /* #app {
