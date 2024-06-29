@@ -12,6 +12,7 @@ const rating = ref(0);
           <img src="../../assets/images/dmmt.png" width="50px" alt="" />
           <img src="../../assets/images/dmmt.png" width="50px" alt="" />
         </div>
+        <div>
         <div class="main-img">
           <img
             src="../../assets/images/dmmt.png"
@@ -20,6 +21,11 @@ const rating = ref(0);
             alt=""
           />
         </div>
+        <div class="btnbox">
+          <v-btn class="addBag">Add To Bag</v-btn>
+          <v-btn class="wishlist"><v-icon>mdi-heart </v-icon> WISHLIST</v-btn>
+        </div>
+      </div>
       </div>
       <div>
         <div>
@@ -31,15 +37,18 @@ const rating = ref(0);
             >4.5 <v-icon class="starIcon" icon="mdi-star"></v-icon> </span
           ><span>(20)</span>
         </div>
+        <div>Rs. 500 <span class="strikeAmount">Rs. 2000 </span></div>
         <br />
         <v-divider></v-divider>
-        <div>Book Details</div>
+        <br>
+        <div><ul><li>Book Details</li></ul></div>
         <div class="desc">
           Lorem ipsum dolor sit amet, consectetur adipisicing elit fuga mollitia
           a Lorem ipsum dolor sit amet, consectetur adipisicing elit fuga
           mollitia a Lorem ipsum dolor sit amet, consectetur adipisicing elit
           fuga mollitia a
         </div>
+        <br>
         <v-divider></v-divider>
         <br />
         <div class="fb-text">Customer Feedback</div>
@@ -55,14 +64,11 @@ const rating = ref(0);
               hover
             ></v-rating>
           </div>
-          <div>
             <v-textarea
-              auto-grow
-              rows="4"
+              rows="2"
               variant="solo"
               placeholder="Write Your Review"
             ></v-textarea>
-          </div>
           <div>
             <v-btn id="submit-btn" color="primary">Submit</v-btn>
           </div>
@@ -73,6 +79,9 @@ const rating = ref(0);
 </template>
 
 <style scoped>
+.v-field__field {
+    height: fit-content;
+}
 .outer-div {
   background-color: white;
   height: 100vh;
@@ -113,6 +122,7 @@ const rating = ref(0);
 .rating-box {
   background-color: rgb(234, 231, 231);
   padding: 10px;
+  height: fit-content !important;
 }
 #submit-btn {
   margin-left: 85%;
@@ -130,5 +140,21 @@ const rating = ref(0);
     padding: 10px;
     width: 100vw;
   }
+}
+.strikeAmount {
+  text-decoration: line-through;
+}
+.btnbox{
+  display: flex;
+  justify-content: space-between;
+  margin-top:8% ;
+}
+.addBag{
+background-color: #A03037;
+color: white;
+}
+.wishlist{
+  background-color: black;
+  color: white;
 }
 </style>

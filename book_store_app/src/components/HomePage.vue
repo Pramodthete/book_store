@@ -7,56 +7,56 @@ onMounted(() => {
   console.log(homeStore.fetchBooks());
 });
 
-const books:any = computed(() => homeStore.books);
-
+const books: any = computed(() => homeStore.books);
 </script>
 
 <template>
   <v-card class="mx-auto" max-width="448">
     <div class="top">
       <div>
-        <span class="books-text">Books</span> <span>({{ books.length }} Items)</span>
+        <span class="books-text">Books</span>
+        <span>({{ books.length }} Items)</span>
       </div>
-      <select >
+      <select>
         <option value="" selected>Sort by relevance</option>
-        <option value="highToLow" >High to Low Price</option>
+        <option value="highToLow">High to Low Price</option>
         <option value="lowToHigh">Low to High Price</option>
         <option value="aboveThreeRating">above 3.0 ratings</option>
       </select>
     </div>
     <div class="card">
-        <div class="block" v-for="book in books">
-          <div class="image">
-            <img src="../assets/images/dmmt.png" alt="" />
-          </div>
-          <div class="content">
-            <h3><b>{{ book.bookName }}</b></h3>
-            <div>{{ book.author }} </div>
-            <span class="rating"
-              >4.5 <v-icon class="starIcon" icon="mdi-star"></v-icon> </span
-            ><span>(20)</span>
-            <div>Rs. {{ book.discountPrice }} <span class="strikeAmount">Rs. {{ book.price }} </span></div>
+      <div
+        class="block"
+        v-for="book in books"
+        @click="homeStore.goToDetails(book._id)"
+      >
+        <div class="image">
+          <img src="../assets/images/dmmt.png" alt="" />
+        </div>
+        <div class="content">
+          <h3>
+            <b>{{ book.bookName }}</b>
+          </h3>
+          <div>{{ book.author }}</div>
+          <span class="rating"
+            >4.5 <v-icon class="starIcon" icon="mdi-star"></v-icon
+          ></span>
+          <span>(20)</span>
+          <div>
+            Rs. {{ book.discountPrice }}
+            <span class="strikeAmount">Rs. {{ book.price }} </span>
           </div>
         </div>
-          <v-pagination
-            class="pagination"
-            v-model="homeStore.page"
-            :length="15"
-            :total-visible="7"
-          ></v-pagination>
-      </div>
-    <br />
-    <br />
-    <div class="foot">
-      <div class="footer">
-        Copiright @ 2020. Bookstore Private Limited. All rights reserved
       </div>
     </div>
   </v-card>
+  <div style="height: 100px;">
+    <v-pagination :length="18"></v-pagination>
+  </div>
+  
 </template>
 
 <style scoped>
-
 .bookstore-text {
   margin-left: 8px;
   padding-bottom: 8px;
@@ -71,10 +71,9 @@ const books:any = computed(() => homeStore.books);
   padding: 0rem 12rem;
   margin: 1.5rem;
 }
-.books-text{
-  font-size: x-large
+.books-text {
+  font-size: x-large;
 }
-
 
 .card {
   display: flex;
@@ -123,6 +122,33 @@ const books:any = computed(() => homeStore.books);
     margin-left: 0%;
     display: flex;
     flex-direction: column;
+  }
+  .card {
+    gap: 1%;
+    padding: 0;
+  }
+  .block {
+    width: 185px !important;
+    height: fit-content;
+    margin-bottom: 1%;
+  }
+  .top {
+    padding: 0;
+    padding-top: 50px;
+    margin: 0;
+  }
+  .image img {
+    width: 80.4px;
+    height: 105px;
+  }
+}
+@media screen and (max-width: 915px) {
+  .card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1%;
+    padding: 0;
   }
 }
 

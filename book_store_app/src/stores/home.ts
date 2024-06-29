@@ -8,6 +8,13 @@ export const useHomeStore = defineStore("home", () => {
 const page=ref(1)
 
 const books = ref([]);
+const router = useRouter();
+
+const goToDetails = (id:string)=>{
+  console.log("id===>",id);
+  router.push(`/bookDetails/${id}`)
+  
+}
 
 const fetchBooks = async () => {
   try {
@@ -23,5 +30,6 @@ return {
 page,
   books,
   fetchBooks,
+  goToDetails
 };
 });

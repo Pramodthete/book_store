@@ -4,6 +4,13 @@ import { useRouter } from "vue-router";
 import imageSrc from "@/assets/images/cartImg.png";
 import { registerData } from "@/services/userService";
 
+export type registerType = {
+  fullName: string | null,
+  email: string | null,
+  password: string | null,
+  phone: string | null
+};
+
 export const useSignupStore = defineStore("signup", () => {
   const tab = ref<number | null>(null);
   const tabs = ref(2);
@@ -48,8 +55,10 @@ export const useSignupStore = defineStore("signup", () => {
     (v: string) =>
       /^\d{10}$/.test(v) || "Not a valid number. Must be 10 digits.",
   ];
-
   const router = useRouter();
+  
+
+  
   const login = () => {
     changeColor.value = !changeColor.value;
     router.push("/login");
@@ -59,22 +68,24 @@ export const useSignupStore = defineStore("signup", () => {
     changeColor.value = !changeColor.value;
     router.push("/signup");
   };
-  const register=()=>{
-    const data: Object = {
-      fullName:name.value,
+  const register = () => {
+    const data: registerType = {
+      fullName: name.value,
       email: email.value,
       password: password.value,
-      phone:mobile.value
+      phone: mobile.value,
     };
-    registerData(data).then((res)=>{
-      console.log(res);
-      tab.value=1
-      changeColor.value = !changeColor.value;
-      router.push('/login')
-    }).catch((error)=>{
-      console.log(error);
-    })
-  }
+    registerData(data)
+      .then((res) => {
+        console.log(res);
+        tab.value = 1;
+        changeColor.value = !changeColor.value;
+        router.push("/login");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return {
     tab,

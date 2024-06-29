@@ -3,6 +3,11 @@ import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import { loginData } from "@/services/userService";
 
+export type loginDataType = {
+  email:string | null,
+  password?:string | null
+}
+
 export const useLoginStore = defineStore("login", () => {
   const visible = ref(false);
   const email = ref<string | null>(null);
@@ -30,6 +35,14 @@ export const useLoginStore = defineStore("login", () => {
     email: email.value,
     password: password.value,
   }));
+  // isFormValid() {
+  //   return (
+  //     email.value &&
+  //     password.value &&
+  //     emailRules.every((rule) => rule(email.value) === true) &&
+  //     passwordRules.every((rule) => rule(this.password) === true)
+  //   )
+  // }
 
   const validateForm = () => {
     const formElement = form.value as any;
@@ -44,9 +57,9 @@ export const useLoginStore = defineStore("login", () => {
 
   const login = () => {
     console.log("Form is valid");
-    const data: Object = {
+    const data: loginDataType = {
       email: email.value,
-      password: password.value,
+      // password: password.value,
     };
     console.log("data==>", data);
 
