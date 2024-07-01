@@ -4,10 +4,23 @@ import { ref, computed, onMounted } from "vue";
 const homeStore = useHomeStore();
 
 onMounted(() => {
-  console.log(homeStore.fetchBooks());
+  homeStore.fetchBooks();
 });
 
-const books: any = computed(() => homeStore.books);
+const books = computed(() => homeStore.paginatedBooks);
+
+const handleSort = (event:any) => {
+  const value = event.target.value;
+  if (value === "highToLow") {
+    homeStore.highToLow();
+  } else if (value === "lowToHigh") {
+    homeStore.lowToHigh();
+  }
+};
+
+const updatePage = (newPage:any) => {
+  homeStore.page = newPage;
+};
 </script>
 
 <template>
@@ -16,17 +29,17 @@ const books: any = computed(() => homeStore.books);
       <div class="top">
         <div>
           <span class="books-text">Books</span>
-          <span>({{ books.length }} Items)</span>
+          <span>({{ homeStore.count }} Items)</span>
         </div>
-        <select>
-          <option value="" selected>Sort by relevance</option>
+        <select @change="handleSort" class="custom-select" >
+          <option value="" disabled selected>Sort by relevance </option>
           <option value="highToLow">High to Low Price</option>
           <option value="lowToHigh">Low to High Price</option>
-          <option value="aboveThreeRating">above 3.0 ratings</option>
         </select>
+        
       </div>
       <div class="card">
-        <div class="block" v-for="book in books">
+        <div class="block" v-for="book in books" :key="book._id">
           <div class="image" @click="homeStore.goToDetails(book)">
             <img src="../assets/images/dmmt.png" alt="" />
           </div>
@@ -35,27 +48,24 @@ const books: any = computed(() => homeStore.books);
               <b>{{ book.bookName }}</b>
             </h3>
             <div>{{ book.author }}</div>
-            <span class="rating"
-              >4.5 <v-icon class="starIcon" icon="mdi-star"></v-icon
-            ></span>
+            <span class="rating">4.5 <v-icon class="starIcon" icon="mdi-star"></v-icon></span>
             <span>(20)</span>
-            <div>
-              Rs. {{ book.discountPrice }}
-              <span class="strikeAmount">Rs. {{ book.price }} </span>
-            </div>
+            <div><b>Rs. {{ book.discountPrice+' ' }} </b><span class="strikeAmount">Rs. {{ book.price }} </span></div>
           </div>
         </div>
       </div>
     </v-card>
     <div style="height: 100px">
-      <v-pagination :length="18"></v-pagination>
+      <v-pagination :length="Math.ceil(homeStore.count / homeStore.itemsPerPage)" v-model="homeStore.page" @input="updatePage"></v-pagination>
     </div>
   </div>
 </template>
 
+
 <style scoped>
 .noBorder{
   border: none;
+  box-shadow: none;
 }
 .bookstore-text {
   margin-left: 8px;
@@ -183,5 +193,27 @@ const books: any = computed(() => homeStore.books);
 
 .pagination {
   margin-left: 20%;
+}
+
+
+.custom-select {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 200px;
+  outline: none; 
+  cursor: pointer; 
+}
+
+.custom-select option {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #fff; 
+  color: #333; 
+}
+
+.custom-select option:checked {
+  background-color: #f0f0f0; 
 }
 </style>

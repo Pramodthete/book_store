@@ -1,19 +1,31 @@
 <script setup lang="ts">
 import { getAllCartItems } from "@/services/bookStoreService";
 import { useHomeStore } from "@/stores/home";
-import { ref,onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { ref, onMounted, onUpdated } from "vue";
 const homeStore = useHomeStore();
+const router = useRouter()
 
-const totalCartItems = ref(0)
+const totalCartItems = ref(0);
+const fav = ref(true);
+const menu = ref(false);
+const message = ref(false);
+const hints = ref(true);
 
 onMounted(() => {
-  getAllCartItems().then((res)=>{
-    console.log(res.data.result);
-    totalCartItems.value=res.data.result.length
-  }).catch((error)=>{
-    console.log(error);
-  })
+  getAllCartItems()
+    .then((res) => {
+      console.log(res.data.result);
+      totalCartItems.value = res.data.result.length;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 });
+
+const newUser=()=>{
+  router.push('/login')
+}
 </script>
 
 <template>
@@ -27,6 +39,8 @@ onMounted(() => {
       </div>
       <div class="search">
         <v-text-field
+          v-model="homeStore.searchText"
+          @keyup="homeStore.search(homeStore.searchText)"
           placeholder="Search..."
           prepend-inner-icon="mdi-magnify"
           variant="solo-filled"
@@ -36,18 +50,46 @@ onMounted(() => {
       <v-spacer></v-spacer>
 
       <div class="end-btn">
-        <v-btn icon class="end-btn1">
-          <div class="item">
-            <v-icon>mdi-account-outline</v-icon>
-            <div class="font">Profile</div>
-          </div>
-        </v-btn>
+        <div class="text-center">
+          <v-menu v-model="menu" :close-on-content-click="false" location="bottom">
+            <template v-slot:activator="{ props }">
+              <v-btn icon class="end-btn1" v-bind="props">
+                <div class="item">
+                  <v-icon>mdi-account-outline</v-icon>
+                  <div class="font">Profile</div>
+                </div>
+              </v-btn>
+            </template>
+            <v-card min-width="300">
+              <v-list>
+                <v-list-item
+                >
+                  <div>Welcome</div>
+                  <div>To access account and manage orders</div>
+                  <v-btn size="large" outlined @click="newUser">Login/Signup</v-btn>
+                </v-list-item>
+              </v-list>
+
+              <v-divider></v-divider>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+
+                <v-btn variant="text" @click="menu = false"><v-icon>mdi-orders</v-icon> My Orders </v-btn>
+                <v-btn color="primary" variant="text" @click="menu = false">
+                  <v-icon>mdi-heart</v-icon> Wishlist
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-menu>
+        </div>
+
         <v-btn icon class="text-none end-btn2" stacked>
-          <v-badge color="white" :content="totalCartItems" >
+          <v-badge color="white" :content="totalCartItems">
             <div class="item">
               <v-icon>mdi-cart-outline</v-icon>
-            <div class="font">Cart</div>
-          </div>
+              <div class="font">Cart</div>
+            </div>
           </v-badge>
         </v-btn>
       </div>

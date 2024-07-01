@@ -5,7 +5,6 @@ import { addToCart } from "@/services/bookStoreService";
 const rating = ref(0);
 const bag = ref(true);
 
-
 const addIntoCart=()=>{
   addToCart(homeStore.book1._id).then((res)=>{
     console.log(res);
@@ -15,8 +14,8 @@ const addIntoCart=()=>{
 }
 
 const increment = () => {
-  if (homeStore.book1.quantity > homeStore.count) {
-    homeStore.count++;
+  if (homeStore.book1.quantity > homeStore.quantity) {
+    homeStore.quantity++;
     addIntoCart()
   } else {
     console.log("out of stock");
@@ -26,9 +25,9 @@ const decrement = () => {
   if (homeStore.book1.quantity === 0) {
     console.log("out of stock");
   }
-  if (homeStore.count == 0) {
+  if (homeStore.quantity == 0) {
   } else {
-    homeStore.count--;
+    homeStore.quantity--;
     addIntoCart()
   }
 };
@@ -42,7 +41,7 @@ const homeStore = useHomeStore();
       <div class="img-flex">
         <div class="two-img">
           <img
-            style="padding: 10%; border: 1px solid rgb(211, 210, 210)"
+            style="padding: 10%; border: 1px solid red"
             src="../../assets/images/dmmt.png"
             width="50px"
             alt=""
@@ -68,7 +67,7 @@ const homeStore = useHomeStore();
               >Add To Bag</v-btn
             >
             <v-icon class="bagBtn" v-else @click="decrement">mdi-minus</v-icon>
-            <div class="count" v-if="!bag">{{ homeStore.count }}</div>
+            <div class="count" v-if="!bag">{{ homeStore.quantity }}</div>
             <v-icon class="bagBtn" v-if="!bag" @click="increment"
               >mdi-plus</v-icon
             >
@@ -113,7 +112,7 @@ const homeStore = useHomeStore();
           <div style="margin-left: 1%"><h4>Overall Ratings</h4></div>
           <div>
             <v-rating
-            color="#FDD835"
+            active-color="#FDD835"
               v-model="rating"
               empty-icon="mdi-star-outline"
               full-icon="mdi-star"
@@ -136,7 +135,7 @@ const homeStore = useHomeStore();
           <div>
             <div>
               <v-rating
-              color="#FDD835"
+              active-color="#FDD835"
                 v-model="rating"
                 empty-icon="mdi-star-outline"
                 full-icon="mdi-star"
@@ -162,7 +161,7 @@ const homeStore = useHomeStore();
           <div>
             <div>
               <v-rating
-              color="#FDD835"
+              active-color="#FDD835"
                 v-model="rating"
                 empty-icon="mdi-star-outline"
                 full-icon="mdi-star"

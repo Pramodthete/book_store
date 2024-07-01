@@ -4,14 +4,14 @@ import { useRouter } from "vue-router";
 import { loginData } from "@/services/userService";
 
 export type loginDataType = {
-  email:string | null,
-  password:string | null
+  email:string,
+  password:string
 }
 
 export const useLoginStore = defineStore("login", () => {
   const visible = ref(false);
-  const email = ref<string | null>(null);
-  const password = ref<string | null>(null);
+  const email = ref('');
+  const password = ref('');
   const router = useRouter(); 
 
   const emailRules = [
@@ -51,8 +51,8 @@ export const useLoginStore = defineStore("login", () => {
   };
 
   const resetForm = () => {
-    email.value = null;
-    password.value = null;
+    email.value = '';
+    password.value = '';
   };
 
   const login = () => {

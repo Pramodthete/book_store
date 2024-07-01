@@ -5,22 +5,22 @@ import imageSrc from "@/assets/images/cartImg.png";
 import { registerData } from "@/services/userService";
 
 export type registerType = {
-  fullName: string | null,
-  email: string | null,
-  password: string | null,
-  phone: string | null
+  fullName: string | null;
+  email: string | null;
+  password: string | null;
+  phone: string | null;
 };
 
 export const useSignupStore = defineStore("signup", () => {
-  const tab = ref<number | null>(null);
+  const tab = ref(0);
   const tabs = ref(2);
   const visible = ref(false);
   const imgSrc = ref(imageSrc);
   const changeColor = ref(false);
-  const email = ref<string | null>(null);
-  const password = ref<string | null>(null);
-  const name = ref<string | null>(null);
-  const mobile = ref<string | null>(null);
+  const email = ref("");
+  const password = ref("");
+  const name = ref("");
+  const mobile = ref("");
 
   const nameRules = [
     (value: string) => !!value || "Enter Full Name",
@@ -56,9 +56,13 @@ export const useSignupStore = defineStore("signup", () => {
       /^\d{10}$/.test(v) || "Not a valid number. Must be 10 digits.",
   ];
   const router = useRouter();
-  
 
-  
+  const resetForm = () => {
+    (name.value = ""), (mobile.value = "");
+    email.value = "";
+    password.value = "";
+  };
+
   const login = () => {
     changeColor.value = !changeColor.value;
     document.body.style.backgroundColor = "rgb(184, 184, 184)";
@@ -82,6 +86,7 @@ export const useSignupStore = defineStore("signup", () => {
         console.log(res);
         tab.value = 1;
         changeColor.value = !changeColor.value;
+        resetForm()
         router.push("/login");
       })
       .catch((error) => {
@@ -105,6 +110,6 @@ export const useSignupStore = defineStore("signup", () => {
     mobile,
     login,
     signup,
-    register
+    register,
   };
 });
