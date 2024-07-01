@@ -6,13 +6,16 @@ import { getAllBooks } from "@/services/bookStoreService";
 
 export const useHomeStore = defineStore("home", () => {
 const page=ref(1)
-
+const count = ref(0);
 const books = ref([]);
+const book1 = ref({});
 const router = useRouter();
 
-const goToDetails = (id:string)=>{
-  console.log("id===>",id);
-  router.push(`/bookDetails/${id}`)
+const goToDetails = (book:Object)=>{
+  console.log("book===>",book);
+  book1.value=book
+  console.log("id===>",book1);
+  router.push(`/bookDetails/${book._id}`)
   
 }
 
@@ -29,6 +32,8 @@ const fetchBooks = async () => {
 return {
 page,
   books,
+  book1,
+  count,
   fetchBooks,
   goToDetails
 };

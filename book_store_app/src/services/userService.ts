@@ -3,13 +3,13 @@ import {postData} from '../services/axiosService'
 import type { registerType } from '@/stores/signUp'
 
 
-const token = localStorage.getItem('token')
+const token = localStorage.getItem('x-access-token')
 
 export const loginData = (data:loginDataType) => {
     let url = '/login'
     const headers = {
       'Content-Type': 'application/json',
-      Authorization: token
+      'x-access-token': token
     }
     return postData(url, data, headers)
   }
@@ -18,7 +18,7 @@ export const loginData = (data:loginDataType) => {
     let url = '/registration'
     const headers = {
       'Content-Type': 'application/json',
-      Authorization: token
+      'x-access-token': token
     }
     return postData(url, data, headers)
   }

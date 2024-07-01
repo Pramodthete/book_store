@@ -64,5 +64,4 @@ const signupStore = useSignupStore();
   padding-bottom: 2%;
 }
 
-
 </style>

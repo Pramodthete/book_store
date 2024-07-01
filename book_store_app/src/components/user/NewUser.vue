@@ -1,6 +1,7 @@
 <script setup>
 import { useSignupStore } from '@/stores/signUp';
 const signupStore = useSignupStore()
+
 </script>
 
 <template>
@@ -31,6 +32,10 @@ const signupStore = useSignupStore()
 </template>
 
 <style >
+body {
+    background-color: rgb(184, 184, 184);
+  }
+
 #cartId {
   border-radius: 50%;
 }

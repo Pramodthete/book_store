@@ -49,10 +49,18 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const signupStore = useSignupStore();
+  const token = localStorage.getItem('x-access-token');
+  const isAuthenticated = !!token;
+
+  if (!isAuthenticated && to.name !== 'login') {
+    return next({ name: 'login' }); 
+  }
+
   if (to.name === "signup") {
     signupStore.tab = 2;
     signupStore.changeColor=true
   }
+  
   next();
 });
 

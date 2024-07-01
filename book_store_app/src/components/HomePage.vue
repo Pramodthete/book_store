@@ -11,52 +11,52 @@ const books: any = computed(() => homeStore.books);
 </script>
 
 <template>
-  <v-card class="mx-auto" max-width="448">
-    <div class="top">
-      <div>
-        <span class="books-text">Books</span>
-        <span>({{ books.length }} Items)</span>
-      </div>
-      <select>
-        <option value="" selected>Sort by relevance</option>
-        <option value="highToLow">High to Low Price</option>
-        <option value="lowToHigh">Low to High Price</option>
-        <option value="aboveThreeRating">above 3.0 ratings</option>
-      </select>
-    </div>
-    <div class="card">
-      <div
-        class="block"
-        v-for="book in books"
-        @click="homeStore.goToDetails(book._id)"
-      >
-        <div class="image">
-          <img src="../assets/images/dmmt.png" alt="" />
+  <div style="background-color: white;">
+    <v-card class="mx-auto noBorder" max-width="448">
+      <div class="top">
+        <div>
+          <span class="books-text">Books</span>
+          <span>({{ books.length }} Items)</span>
         </div>
-        <div class="content">
-          <h3>
-            <b>{{ book.bookName }}</b>
-          </h3>
-          <div>{{ book.author }}</div>
-          <span class="rating"
-            >4.5 <v-icon class="starIcon" icon="mdi-star"></v-icon
-          ></span>
-          <span>(20)</span>
-          <div>
-            Rs. {{ book.discountPrice }}
-            <span class="strikeAmount">Rs. {{ book.price }} </span>
+        <select>
+          <option value="" selected>Sort by relevance</option>
+          <option value="highToLow">High to Low Price</option>
+          <option value="lowToHigh">Low to High Price</option>
+          <option value="aboveThreeRating">above 3.0 ratings</option>
+        </select>
+      </div>
+      <div class="card">
+        <div class="block" v-for="book in books">
+          <div class="image" @click="homeStore.goToDetails(book)">
+            <img src="../assets/images/dmmt.png" alt="" />
+          </div>
+          <div class="content">
+            <h3>
+              <b>{{ book.bookName }}</b>
+            </h3>
+            <div>{{ book.author }}</div>
+            <span class="rating"
+              >4.5 <v-icon class="starIcon" icon="mdi-star"></v-icon
+            ></span>
+            <span>(20)</span>
+            <div>
+              Rs. {{ book.discountPrice }}
+              <span class="strikeAmount">Rs. {{ book.price }} </span>
+            </div>
           </div>
         </div>
       </div>
+    </v-card>
+    <div style="height: 100px">
+      <v-pagination :length="18"></v-pagination>
     </div>
-  </v-card>
-  <div style="height: 100px;">
-    <v-pagination :length="18"></v-pagination>
   </div>
-  
 </template>
 
 <style scoped>
+.noBorder{
+  border: none;
+}
 .bookstore-text {
   margin-left: 8px;
   padding-bottom: 8px;
@@ -166,7 +166,7 @@ const books: any = computed(() => homeStore.books);
   padding-left: 6%;
 }
 .rating {
-  background-color: green;
+  background-color: rgb(41, 163, 41);
   color: white;
   width: fit-content;
   padding: 2px;

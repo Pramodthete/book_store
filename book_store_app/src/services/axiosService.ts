@@ -8,6 +8,6 @@ export const getData=(url:String,headers:Object)=>{
     return axios.get(BASE_URL+url,headers)
 }
 
-export const postData=(url:String,data:loginDataType | registerType,headers:Object)=>{
+export const postData=(url:String,data:loginDataType | registerType | Object,headers:Object)=>{
     return axios.post(BASE_URL+url,data,headers)
 }

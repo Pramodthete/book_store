@@ -1,4 +1,20 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { getAllCartItems } from "@/services/bookStoreService";
+import { useHomeStore } from "@/stores/home";
+import { ref,onMounted } from "vue";
+const homeStore = useHomeStore();
+
+const totalCartItems = ref(0)
+
+onMounted(() => {
+  getAllCartItems().then((res)=>{
+    console.log(res.data.result);
+    totalCartItems.value=res.data.result.length
+  }).catch((error)=>{
+    console.log(error);
+  })
+});
+</script>
 
 <template>
   <v-layout>
@@ -26,19 +42,19 @@
             <div class="font">Profile</div>
           </div>
         </v-btn>
-        <v-btn icon class="end-btn2">
-          <div class="item">
-            <v-icon>mdi-cart-outline</v-icon>
+        <v-btn icon class="text-none end-btn2" stacked>
+          <v-badge color="white" :content="totalCartItems" >
+            <div class="item">
+              <v-icon>mdi-cart-outline</v-icon>
             <div class="font">Cart</div>
           </div>
+          </v-badge>
         </v-btn>
       </div>
     </v-app-bar>
   </v-layout>
 
-
-  <RouterView/>
-
+  <RouterView />
 
   <div class="foot">
     <div class="footer">

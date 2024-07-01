@@ -5,7 +5,7 @@ import { loginData } from "@/services/userService";
 
 export type loginDataType = {
   email:string | null,
-  password?:string | null
+  password:string | null
 }
 
 export const useLoginStore = defineStore("login", () => {
@@ -59,16 +59,16 @@ export const useLoginStore = defineStore("login", () => {
     console.log("Form is valid");
     const data: loginDataType = {
       email: email.value,
-      // password: password.value,
+      password: password.value,
     };
     console.log("data==>", data);
 
     loginData(data)
       .then((res) => {
-        localStorage.setItem("token", res.data.result.accessToken);
+        localStorage.setItem("x-access-token", res.data.result.accessToken);
         console.log(res);
         resetForm();
-        router.push("/"); 
+        router.push("/books"); 
       })
       .catch((error) => {
         console.log(error);

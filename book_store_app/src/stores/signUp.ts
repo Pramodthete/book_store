@@ -61,11 +61,13 @@ export const useSignupStore = defineStore("signup", () => {
   
   const login = () => {
     changeColor.value = !changeColor.value;
+    document.body.style.backgroundColor = "rgb(184, 184, 184)";
     router.push("/login");
   };
 
   const signup = () => {
     changeColor.value = !changeColor.value;
+    document.body.style.backgroundColor = "rgb(136, 135, 135)";
     router.push("/signup");
   };
   const register = () => {
