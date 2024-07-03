@@ -7,6 +7,9 @@ import BookDetails from "../views/BookDetailsView.vue";
 import { useSignupStore } from "@/stores/signUp";
 import BookHeader from "@/views/BookHeaderView.vue";
 
+import { useHomeStore } from "@/stores/home";
+
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -49,6 +52,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const signupStore = useSignupStore();
+  const homeStore = useHomeStore();
   const token = localStorage.getItem('x-access-token');
   const isAuthenticated = !!token;
 
@@ -59,6 +63,16 @@ router.beforeEach((to, from, next) => {
   if (to.name === "signup") {
     signupStore.tab = 2;
     signupStore.changeColor=true
+  }
+  if (to.path === "/") {
+    return next({name:'home'})
+  }
+  if (to.name === "bookDetails/:id") {
+    const bookId = to.params.id;
+    if (!homeStore.book1._id || homeStore.book1._id !== bookId) {
+      console.log("Book not found in store, fetch or handle as needed.");
+      // Fetch book or handle the case when the book is not in store
+    }
   }
   
   next();

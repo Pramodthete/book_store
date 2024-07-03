@@ -7,13 +7,16 @@ const homeStore = useHomeStore();
 const router = useRouter()
 
 const totalCartItems = ref(0);
-const fav = ref(true);
 const menu = ref(false);
-const message = ref(false);
-const hints = ref(true);
+
+const logout = () => {
+  localStorage.removeItem("x-access-token");
+  router.push('/login')
+};
 
 onMounted(() => {
-  getAllCartItems()
+  const tk = localStorage.getItem('x-access-token')
+  getAllCartItems(tk)
     .then((res) => {
       console.log(res.data.result);
       totalCartItems.value = res.data.result.length;
@@ -23,9 +26,6 @@ onMounted(() => {
     });
 });
 
-const newUser=()=>{
-  router.push('/login')
-}
 </script>
 
 <template>
@@ -60,24 +60,20 @@ const newUser=()=>{
                 </div>
               </v-btn>
             </template>
-            <v-card min-width="300">
+            <v-card min-width="200">
               <v-list>
                 <v-list-item
                 >
-                  <div>Welcome</div>
-                  <div>To access account and manage orders</div>
-                  <v-btn size="large" outlined @click="newUser">Login/Signup</v-btn>
+                  <div><b>Welcome Pramod,</b></div>
+                  <v-btn variant="plain"><v-icon>mdi-account-outline</v-icon><span>Profile</span></v-btn><br>
+                  <v-btn variant="plain"><v-icon>mdi-cart-outline</v-icon><span>My Orders</span></v-btn><br>
+                  <v-btn variant="plain"><v-icon>mdi-heart-outline</v-icon><span>My Wishlist</span></v-btn><br>
                 </v-list-item>
               </v-list>
 
-              <v-divider></v-divider>
-
               <v-card-actions>
-                <v-spacer></v-spacer>
-
-                <v-btn variant="text" @click="menu = false"><v-icon>mdi-orders</v-icon> My Orders </v-btn>
-                <v-btn color="primary" variant="text" @click="menu = false">
-                  <v-icon>mdi-heart</v-icon> Wishlist
+                <v-btn color="red" width="100%" variant="outlined" @click="logout">
+                  Logout
                 </v-btn>
               </v-card-actions>
             </v-card>

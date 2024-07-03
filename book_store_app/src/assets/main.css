@@ -10,7 +10,9 @@
 /* body {
   width: fit-content;
 } */
-
+body{
+  background-color: white;
+}
 a,
 .green {
   text-decoration: none;

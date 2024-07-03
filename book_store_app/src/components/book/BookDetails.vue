@@ -1,43 +1,80 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
 import { useHomeStore } from "@/stores/home";
-import { addToCart } from "@/services/bookStoreService";
+import { addToCart, getAllBooks, getFeedbacksById } from "@/services/bookStoreService";
+import type { Book, Feedback } from "@/stores/home";
+
+const route = useRoute();
 const rating = ref(0);
 const bag = ref(true);
+const book1 = ref<Book | null>(null);
+const books = ref<Book[]>([]);
+const feedbacks = ref<Feedback[]>([]);
+const bookId = route.params.id as string; 
 
-const addIntoCart=()=>{
-  addToCart(homeStore.book1._id).then((res)=>{
-    console.log(res);
-  }).catch((error)=>{
+const homeStore = useHomeStore();
+
+const fetchBooks = async () => {
+  try {
+    const res = await getAllBooks();
+    books.value = res.data.result;
+    console.log(res.data.result);
+    book1.value = books.value.find((b) => b._id === bookId) || null;
+  } catch (error) {
     console.log(error);
-  })
-}
+  }
+};
+
+const getFeedbacks = async () => {
+  try {
+    const res = await getFeedbacksById(bookId);
+    feedbacks.value = res.data.result;
+    console.log(res.data.result);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+onMounted(() => {
+  fetchBooks();
+  getFeedbacks();
+  document.body.style.backgroundColor = 'white';
+});
+
+const addIntoCart = async () => {
+  if (book1.value) {
+    try {
+      const res = await addToCart(book1.value._id);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
 
 const increment = () => {
-  if (homeStore.book1.quantity > homeStore.quantity) {
+  if (book1.value && book1.value.quantity && book1.value.quantity > homeStore.quantity) {
     homeStore.quantity++;
-    addIntoCart()
+    addIntoCart();
   } else {
     console.log("out of stock");
   }
 };
+
 const decrement = () => {
-  if (homeStore.book1.quantity === 0) {
+  if (book1.value && book1.value.quantity === 0) {
     console.log("out of stock");
-  }
-  if (homeStore.quantity == 0) {
-  } else {
+  } else if (homeStore.quantity > 0) {
     homeStore.quantity--;
-    addIntoCart()
   }
 };
-const homeStore = useHomeStore();
 </script>
 
 <template>
   <div class="outer-div">
     <v-breadcrumbs :items="['Home', `Book (1)`]"></v-breadcrumbs>
-    <div class="details">
+    <div class="details" v-if="book1">
       <div class="img-flex">
         <div class="two-img">
           <img
@@ -48,7 +85,7 @@ const homeStore = useHomeStore();
           />
           <img
             style="padding: 10%; border: 1px solid rgb(211, 210, 210)"
-            src="../../assets/images/dmmt.png"
+            src="../../assets/images/uxdesign.png"
             width="50px"
             alt=""
           />
@@ -75,21 +112,21 @@ const homeStore = useHomeStore();
           </div>
         </div>
       </div>
-      <div>
+      <div class="second-div">
         <div>
           <h2>
-            <b>{{ homeStore.book1.bookName }}</b>
+            <b>{{ book1.bookName }}</b>
           </h2>
         </div>
-        <div class="author">{{ homeStore.book1.author }}</div>
+        <div class="author">By {{ book1.author }}</div>
         <div>
           <span class="rating"
             >4.5 <v-icon class="starIcon" icon="mdi-star"></v-icon> </span
           ><span> (20)</span>
         </div>
         <div class="price">
-          Rs. {{ homeStore.book1.discountPrice }}
-          <span class="strikeAmount">Rs. {{ homeStore.book1.price }} </span>
+          Rs. {{ book1.discountPrice }}
+          <span class="strikeAmount">Rs. {{ book1.price }} </span>
         </div>
 
         <v-divider></v-divider>
@@ -100,10 +137,7 @@ const homeStore = useHomeStore();
           </ul>
         </div>
         <div class="desc">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit fuga mollitia
-          a Lorem ipsum dolor sit amet, consectetur adipisicing elit fuga
-          mollitia a Lorem ipsum dolor sit amet, consectetur adipisicing elit
-          fuga mollitia a
+          {{ book1.description }}
         </div>
         <br />
         <v-divider></v-divider>
@@ -112,7 +146,7 @@ const homeStore = useHomeStore();
           <div style="margin-left: 1%"><h4>Overall Ratings</h4></div>
           <div>
             <v-rating
-            active-color="#FDD835"
+              active-color="#FDD835"
               v-model="rating"
               empty-icon="mdi-star-outline"
               full-icon="mdi-star"
@@ -125,18 +159,19 @@ const homeStore = useHomeStore();
           <div>
             <button id="submit-btn">Submit</button>
           </div>
-          <br /><br>
+          <br /><br />
         </div>
-        <div>
+        <div v-for="feedback in feedbacks" :key="feedback._id">
           <div class="namebox">
-            <div class="round">AC</div>
-            <div class="name">Aniket Chile</div>
+            <div class="round">{{ feedback.user_id.fullName[0] }}</div>
+            <div class="name">{{ feedback.user_id.fullName }}</div>
           </div>
           <div>
             <div>
               <v-rating
-              active-color="#FDD835"
-                v-model="rating"
+                readonly
+                active-color="#FDD835"
+                v-model="feedback.rating"
                 empty-icon="mdi-star-outline"
                 full-icon="mdi-star"
                 half-icon="mdi-star-half"
@@ -145,41 +180,15 @@ const homeStore = useHomeStore();
               ></v-rating>
             </div>
             <div>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita
-              tenetur porro fugit quam molestias, dolore officiis. Nihil, rerum
-              nisi voluptates obcaecati dicta, laudantium consectetur assumenda
-              ut sit facere exercitationem? Hic.
-            </div>
-            <br />
-          </div>
-        </div>
-        <div>
-          <div class="namebox">
-            <div class="round">SB</div>
-            <div class="name">Sweta Bodkar</div>
-          </div>
-          <div>
-            <div>
-              <v-rating
-              active-color="#FDD835"
-                v-model="rating"
-                empty-icon="mdi-star-outline"
-                full-icon="mdi-star"
-                half-icon="mdi-star-half"
-                half-increments
-                hover
-              ></v-rating>
-            </div>
-            <div>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita
-              tenetur porro fugit quam molestias, dolore officiis. Nihil, rerum
-              nisi voluptates obcaecati dicta, laudantium consectetur assumenda
-              ut sit facere exercitationem? Hic.
+              {{ feedback.comment }}
             </div>
             <br />
           </div>
         </div>
       </div>
+    </div>
+    <div v-else>
+      Loading...
     </div>
   </div>
 </template>
@@ -197,13 +206,13 @@ const homeStore = useHomeStore();
 }
 @media screen and (max-width: 410px) {
   .body {
-    width: 100%
+    width: 100%;
   }
   .outer-div {
     padding: 0;
     width: 100%;
   }
-  .two-img{
+  .two-img {
     display: none;
   }
 }
@@ -219,8 +228,11 @@ const homeStore = useHomeStore();
 .details {
   display: flex;
   /* flex-wrap: wrap; */
-  width: fit-content;
+  width: 1000px;
   gap: 50px;
+}
+.second-div{
+  width: 800px;
 }
 .img-flex {
   display: flex;
@@ -316,7 +328,7 @@ textarea {
   border-radius: 50%;
   background-color: rgb(210, 210, 210);
   padding: 13px;
-  padding-left: 1 5px;
+  padding-left: 19px;
 }
 .name {
   padding-top: 1%;

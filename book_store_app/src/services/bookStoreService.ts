@@ -25,8 +25,19 @@ export const getAllBooks = () => {
     return postData(url,data, headersOptions)
   }
 
-  export const getAllCartItems = () => {
+  export const getAllCartItems = (tk: string | null) => {
     let url = `/get_cart_items`
+    let headersOptions = {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': tk
+      }
+    }
+    return getData(url, headersOptions)
+  }
+
+  export const getFeedbacksById = (bookId:string) => {
+    let url = `/get/feedback/${bookId}`
     let headersOptions = {
       headers: {
         'Content-Type': 'application/json',

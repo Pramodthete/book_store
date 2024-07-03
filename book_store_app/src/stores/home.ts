@@ -1,26 +1,58 @@
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import { getAllBooks } from "@/services/bookStoreService";
 
-export const useHomeStore = defineStore("home", () => {
-  const page = ref(1);
-  const itemsPerPage = ref(12);
-  const count = ref(0);
-  const quantity = ref(0);
-  const book1 = ref({});
-  const router = useRouter();
-  const searchText = ref<string>("");
-  const originalBooks = ref([]);
-  const books = ref([]);
+export interface Book {
+  _id: string;
+  bookName?: string;
+  author?: string;
+  discountPrice?: number;
+  quantity?: number;
+  price?:number
+  description?:string
+}
+export interface Feedback {
+  _id: string;
+  book_id: string;
+  user_id: {
+    _id: string;
+    fullName: string;
+  };
+  rating: number;
+  comment: string;
+}
 
-  const goToDetails = (book: Object) => {
-    console.log("book===>", book);
-    book1.value = book;
-    console.log("id===>", book1);
+export interface StoreState {
+  page: number;
+  itemsPerPage: number;
+  count: number;
+  quantity: number;
+  book1: Book;
+  searchText: string;
+  originalBooks: Book[];
+  books: Book[];
+}
+
+export const useHomeStore = defineStore("home", () => {
+  const page = ref<StoreState["page"]>(1);
+  const itemsPerPage = ref<StoreState["itemsPerPage"]>(12);
+  const count = ref<StoreState["count"]>(0);
+  const quantity = ref<StoreState["quantity"]>(0);
+  const book1 = ref<StoreState["book1"]>({} as Book);
+  const router = useRouter();
+  const searchText = ref<StoreState["searchText"]>("");
+  const originalBooks = ref<StoreState["originalBooks"]>([]);
+  const books = ref<StoreState["books"]>([]);
+
+  const goToDetails = (book: Book) => {
+    setBook(book);
     router.push(`/bookDetails/${book._id}`);
   };
- 
+
+  const setBook = (book: Book) => {
+    book1.value = book;
+  };
 
   const search = (typeText: string) => {
     if (typeText) {
@@ -34,30 +66,38 @@ export const useHomeStore = defineStore("home", () => {
     } else {
       books.value = [...originalBooks.value];
     }
-    document.body.style.backgroundColor = "white";
     console.log(books.value);
   };
 
   const highToLow = () => {
-    books.value.sort((a, b) => b.discountPrice - a.discountPrice);
+    books.value.sort((a, b) => {
+      const priceA = a.discountPrice ?? 0;
+      const priceB = b.discountPrice ?? 0;
+      return priceB - priceA;
+    });
   };
 
   const lowToHigh = () => {
-    books.value.sort((a, b) => a.discountPrice - b.discountPrice);
+    books.value.sort((a, b) => {
+      const priceA = a.discountPrice ?? 0;
+      const priceB = b.discountPrice ?? 0;
+      return priceA - priceB;
+    });
   };
 
-  const fetchBooks = async () => {
-    try {
-      const res = await getAllBooks();
-      originalBooks.value = res.data.result;
-      books.value = [...originalBooks.value];
-      count.value = books.value.length;
-      console.log(res.data.result);
-    } catch (error) {
-      console.log(error);
-    }
+  const fetchBooks = () => {
+    getAllBooks()
+      .then((res) => {
+        originalBooks.value = res.data.result;
+        books.value = [...originalBooks.value];
+        count.value = books.value.length;
+        console.log(res.data.result);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
-  
+
   const paginatedBooks = computed(() => {
     const start = (page.value - 1) * itemsPerPage.value;
     const end = start + itemsPerPage.value;
@@ -77,6 +117,7 @@ export const useHomeStore = defineStore("home", () => {
     search,
     highToLow,
     lowToHigh,
+    setBook,
     paginatedBooks,
   };
 });

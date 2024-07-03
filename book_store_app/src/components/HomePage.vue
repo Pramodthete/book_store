@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useHomeStore } from "@/stores/home";
-import { ref, computed, onMounted } from "vue";
+import {computed, onMounted } from "vue";
 const homeStore = useHomeStore();
 
 onMounted(() => {
