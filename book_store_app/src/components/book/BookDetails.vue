@@ -3,13 +3,11 @@ import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useHomeStore } from "@/stores/home";
 import {
-  addToCart,
   getAllBooks,
   getFeedbacksById,
-  deleteFromCart,
   storeFeedback,
 } from "@/services/bookStoreService";
-import type { Book, Feedback } from "@/stores/home";
+import type { Book, Feedback, Cart } from "@/stores/home";
 
 const route = useRoute();
 const rating = ref(0);
@@ -18,7 +16,7 @@ const book1 = ref<Book | null>(null);
 const books = ref<Book[]>([]);
 const feedbacks = ref<Feedback[]>([]);
 const bookId = route.params.id as string;
-const feedbackText = ref<string>()
+const feedbackText = ref<string>("");
 
 const homeStore = useHomeStore();
 
@@ -43,76 +41,43 @@ const getFeedbacks = async () => {
   }
 };
 
+const clickBag = () => {
+  homeStore.increment(bookId);
+  bag.value = false;
+};
+
 const addFeedbacks = () => {
-  const data={
-  comment: feedbackText.value,
-  rating: rating.value
-}
-console.log(bookId, data);
+  const data = {
+    comment: feedbackText.value,
+    rating: rating.value,
+  };
+  console.log(bookId, data);
 
-  storeFeedback(bookId, data)
-    .then((res) => {
-      console.log(res);
-      getFeedbacks()
-      feedbackText.value=''
-      rating.value=0
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-
+  if (feedbackText.value !== "" && rating.value !== 0) {
+    storeFeedback(bookId, data)
+      .then((res) => {
+        console.log(res);
+        getFeedbacks();
+        feedbackText.value = "";
+        rating.value = 0;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  } else {
+    console.log("Feedback Text and rating Both required");
+  }
 };
 
 onMounted(() => {
   fetchBooks();
   getFeedbacks();
+  homeStore.getOneBook(bookId);
   document.body.style.backgroundColor = "white";
 });
-
-const addIntoCart = async () => {
-  if (book1.value) {
-    try {
-      const res = await addToCart(book1.value._id);
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-};
-
-const removeFromCart = async () => {
-  if (book1.value) {
-    try {
-      const res = await deleteFromCart(book1.value._id); // pass cart Id here
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-};
-
-const increment = () => {
-  if (
-    book1.value &&
-    book1.value.quantity &&
-    book1.value.quantity > homeStore.quantity
-  ) {
-    homeStore.quantity++;
-    addIntoCart();
-  } else {
-    console.log("out of stock");
-  }
-};
-
-const decrement = () => {
-  if (book1.value && book1.value.quantity === 0) {
-    console.log("out of stock");
-  } else if (homeStore.quantity > 0) {
-    homeStore.quantity--;
-    removeFromCart();
-  }
-};
 </script>
+
+
 
 <template>
   <div class="outer-div">
@@ -143,15 +108,22 @@ const decrement = () => {
             />
           </div>
           <div class="btnbox">
-            <v-btn class="addBag" v-if="bag" @click="bag = !bag"
-              >Add To Bag</v-btn
-            >
-            <v-icon class="bagBtn" v-else @click="decrement">mdi-minus</v-icon>
-            <div class="count" v-if="!bag">{{ homeStore.quantity }}</div>
-            <v-icon class="bagBtn" v-if="!bag" @click="increment"
-              >mdi-plus</v-icon
-            >
-            <v-btn class="wishlist"><v-icon>mdi-heart </v-icon> WISHLIST</v-btn>
+            
+            <v-icon class="bagBtn" v-if="homeStore.quantity > 0" @click="homeStore.decrement">
+              mdi-minus
+            </v-icon>
+            <div class="count" v-if="homeStore.quantity > 0">
+              {{ homeStore.quantity }}
+            </div>
+            <v-icon class="bagBtn" v-if="homeStore.quantity > 0" @click="homeStore.increment(bookId)">
+              mdi-plus
+            </v-icon>
+            <v-btn class="addBag" v-else @click="clickBag">
+              Add To Bag
+            </v-btn>
+            <v-btn class="wishlist">
+              <v-icon>mdi-heart </v-icon> WISHLIST
+            </v-btn>
           </div>
         </div>
       </div>
@@ -163,13 +135,14 @@ const decrement = () => {
         </div>
         <div class="author">By {{ book1.author }}</div>
         <div>
-          <span class="rating"
-            >4.5 <v-icon class="starIcon" icon="mdi-star"></v-icon> </span
-          ><span> (20)</span>
+          <span class="rating">
+            4.5 <v-icon class="starIcon" icon="mdi-star"></v-icon>
+          </span>
+          <span> (20)</span>
         </div>
         <div class="price">
           Rs. {{ book1.discountPrice }}
-          <span class="strikeAmount">Rs. {{ book1.price }} </span>
+          <span class="strikeAmount">Rs. {{ book1.price }}</span>
         </div>
 
         <v-divider></v-divider>
@@ -186,7 +159,9 @@ const decrement = () => {
         <v-divider></v-divider>
         <div class="fb-text">Customer Feedback</div>
         <div class="rating-box">
-          <div style="margin-left: 1%"><h4>Overall Ratings</h4></div>
+          <div style="margin-left: 1%">
+            <h4>Overall Ratings</h4>
+          </div>
           <div>
             <v-rating
               active-color="#FDD835"
@@ -232,6 +207,7 @@ const decrement = () => {
     <div v-else>Loading...</div>
   </div>
 </template>
+
 
 <style scoped>
 @media screen and (max-width: 800px) {

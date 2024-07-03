@@ -12,5 +12,5 @@ export const postData=(url:String,data:loginDataType | registerType | Object,hea
     return axios.post(BASE_URL+url,data,headers)
 }
 export const deleteData=(url:String,headers:Object)=>{
-    return axios.post(BASE_URL+url,headers)
+    return axios.delete(BASE_URL+url,headers)
 }

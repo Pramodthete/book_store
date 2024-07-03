@@ -47,9 +47,8 @@ export const getAllBooks = () => {
     return getData(url, headersOptions)
   }
 
-  // deleteFromCart
   export const deleteFromCart = (cartId:string) => {
-    let url = `/add_cart_item/${cartId}`
+    let url = `/remove_cart_item/${cartId}`
     let headersOptions = {
       headers: {
         'Content-Type': 'application/json',

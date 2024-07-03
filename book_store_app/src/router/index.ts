@@ -8,6 +8,7 @@ import { useSignupStore } from "@/stores/signUp";
 import BookHeader from "@/views/BookHeaderView.vue";
 
 import { useHomeStore } from "@/stores/home";
+import CartItems from "@/components/cart/cartItems.vue";
 
 
 const router = createRouter({
@@ -26,6 +27,11 @@ const router = createRouter({
         path: "/bookDetails/:id",
         name: "bookDetails",
         component: BookDetails,
+      },
+      {
+        path: "/cartDetails",
+        name: "cartDetails",
+        component: CartItems
       },
     ]
     },
@@ -68,6 +74,9 @@ router.beforeEach((to, from, next) => {
     return next({name:'home'})
   }
   if (to.name === "bookDetails/:id") {
+    if(!isAuthenticated){
+      return next({ name: 'login' }); 
+    }
     const bookId = to.params.id;
     if (!homeStore.book1._id || homeStore.book1._id !== bookId) {
       console.log("Book not found in store, fetch or handle as needed.");

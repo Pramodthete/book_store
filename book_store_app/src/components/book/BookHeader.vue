@@ -2,11 +2,10 @@
 import { getAllCartItems } from "@/services/bookStoreService";
 import { useHomeStore } from "@/stores/home";
 import { useRouter } from "vue-router";
-import { ref, onMounted, onUpdated } from "vue";
+import { ref, onMounted } from "vue";
 const homeStore = useHomeStore();
 const router = useRouter()
 
-const totalCartItems = ref(0);
 const menu = ref(false);
 
 const logout = () => {
@@ -14,16 +13,12 @@ const logout = () => {
   router.push('/login')
 };
 
+const goToCart=()=>{
+  router.push('/cartDetails')
+}
+
 onMounted(() => {
-  const tk = localStorage.getItem('x-access-token')
-  getAllCartItems(tk)
-    .then((res) => {
-      console.log(res.data.result);
-      totalCartItems.value = res.data.result.length;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  homeStore.fetchAllCarts()
 });
 
 </script>
@@ -80,8 +75,8 @@ onMounted(() => {
           </v-menu>
         </div>
 
-        <v-btn icon class="text-none end-btn2" stacked>
-          <v-badge color="white" :content="totalCartItems">
+        <v-btn icon class="text-none end-btn2" @click="goToCart" stacked>
+          <v-badge color="white" :content="homeStore.totalCarts">
             <div class="item">
               <v-icon>mdi-cart-outline</v-icon>
               <div class="font">Cart</div>
