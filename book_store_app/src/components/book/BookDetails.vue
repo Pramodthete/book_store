@@ -2,7 +2,13 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useHomeStore } from "@/stores/home";
-import { addToCart, getAllBooks, getFeedbacksById } from "@/services/bookStoreService";
+import {
+  addToCart,
+  getAllBooks,
+  getFeedbacksById,
+  deleteFromCart,
+  storeFeedback,
+} from "@/services/bookStoreService";
 import type { Book, Feedback } from "@/stores/home";
 
 const route = useRoute();
@@ -11,7 +17,8 @@ const bag = ref(true);
 const book1 = ref<Book | null>(null);
 const books = ref<Book[]>([]);
 const feedbacks = ref<Feedback[]>([]);
-const bookId = route.params.id as string; 
+const bookId = route.params.id as string;
+const feedbackText = ref<string>()
 
 const homeStore = useHomeStore();
 
@@ -29,17 +36,37 @@ const fetchBooks = async () => {
 const getFeedbacks = async () => {
   try {
     const res = await getFeedbacksById(bookId);
-    feedbacks.value = res.data.result;
+    feedbacks.value = res.data.result.reverse();
     console.log(res.data.result);
   } catch (error) {
     console.log(error);
   }
 };
 
+const addFeedbacks = () => {
+  const data={
+  comment: feedbackText.value,
+  rating: rating.value
+}
+console.log(bookId, data);
+
+  storeFeedback(bookId, data)
+    .then((res) => {
+      console.log(res);
+      getFeedbacks()
+      feedbackText.value=''
+      rating.value=0
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+};
+
 onMounted(() => {
   fetchBooks();
   getFeedbacks();
-  document.body.style.backgroundColor = 'white';
+  document.body.style.backgroundColor = "white";
 });
 
 const addIntoCart = async () => {
@@ -53,8 +80,23 @@ const addIntoCart = async () => {
   }
 };
 
+const removeFromCart = async () => {
+  if (book1.value) {
+    try {
+      const res = await deleteFromCart(book1.value._id); // pass cart Id here
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
+
 const increment = () => {
-  if (book1.value && book1.value.quantity && book1.value.quantity > homeStore.quantity) {
+  if (
+    book1.value &&
+    book1.value.quantity &&
+    book1.value.quantity > homeStore.quantity
+  ) {
     homeStore.quantity++;
     addIntoCart();
   } else {
@@ -67,6 +109,7 @@ const decrement = () => {
     console.log("out of stock");
   } else if (homeStore.quantity > 0) {
     homeStore.quantity--;
+    removeFromCart();
   }
 };
 </script>
@@ -151,13 +194,12 @@ const decrement = () => {
               empty-icon="mdi-star-outline"
               full-icon="mdi-star"
               half-icon="mdi-star-half"
-              half-increments
               hover
             ></v-rating>
           </div>
-          <textarea rows="3" placeholder="Write Your Review"></textarea>
+          <textarea rows="3" v-model="feedbackText" placeholder="Write Your Review"></textarea>
           <div>
-            <button id="submit-btn">Submit</button>
+            <button id="submit-btn" @click="addFeedbacks">Submit</button>
           </div>
           <br /><br />
         </div>
@@ -187,9 +229,7 @@ const decrement = () => {
         </div>
       </div>
     </div>
-    <div v-else>
-      Loading...
-    </div>
+    <div v-else>Loading...</div>
   </div>
 </template>
 
@@ -231,7 +271,7 @@ const decrement = () => {
   width: 1000px;
   gap: 50px;
 }
-.second-div{
+.second-div {
   width: 800px;
 }
 .img-flex {

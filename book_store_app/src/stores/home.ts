@@ -11,6 +11,7 @@ export interface Book {
   quantity?: number;
   price?:number
   description?:string
+  
 }
 export interface Feedback {
   _id: string;
