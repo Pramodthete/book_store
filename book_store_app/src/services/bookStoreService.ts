@@ -69,3 +69,14 @@ export const getAllBooks = () => {
     }
     return postData(url,data, headersOptions)
   }
+
+  export const get_wishlist_items = (tk:string | null)=>{
+    let url = `/get_wishlist_items`
+    let headersOptions = {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': tk
+      }
+    }
+    return getData(url, headersOptions)
+  }

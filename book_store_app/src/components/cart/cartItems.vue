@@ -3,7 +3,10 @@ import { ref, watch, onMounted } from "vue";
 import { useHomeStore, type Cart } from "@/stores/home";
 
 const homeStore = useHomeStore();
-const items = ref(false);
+const items = ref(true);
+const address = ref(false);
+const placeOrderBtn = ref(true);
+const checkoutBtn = ref(true);
 const carts = ref<Cart[]>([]);
 
 carts.value = homeStore.allCartItems;
@@ -15,7 +18,13 @@ watch(
   }
 );
 
+const placeOrder = () => {
+  address.value = !address.value;
+  placeOrderBtn.value = !placeOrderBtn.value;
+};
+
 onMounted(() => {
+  homeStore.fetchAllCarts();
   document.body.style.backgroundColor = "white";
 });
 </script>
@@ -27,42 +36,191 @@ onMounted(() => {
   <div class="outer-div">
     <div class="outerBorder">
       <div class="flex">
-        <h2 @click="items = !items"><b>My Cart ({{ homeStore.allCartItems.length }})</b></h2>
-        <select v-if="items">
+        <h2 @click="items = !items">
+          <b>My Cart ({{ homeStore.allCartItems.length }})</b>
+        </h2>
+        <select v-if="items" class="custom-select">
           <option value="">Use Current Location</option>
         </select>
       </div>
       <div v-if="items">
-      <br>
+        <br />
         <div class="main-img" v-for="book in carts" :key="book._id">
           <div>
-            <img src="../../assets/images/dmmt.png" height="130px" width="100px" alt="" />
+            <img
+              src="../../assets/images/dmmt.png"
+              height="130px"
+              width="100px"
+              alt=""
+            />
           </div>
           <div>
-            <h3><b>{{ book.product_id.bookName }}</b></h3>
+            <h3>
+              <b>{{ book.product_id.bookName }}</b>
+            </h3>
             <div>{{ book.product_id.author }}</div>
             <div>
-              <b style="font-size: larger;">Rs. {{ book.product_id.discountPrice }}</b>
-              <span><s>Rs. {{ book.product_id.price }}</s></span>
+              <b style="font-size: larger"
+                >Rs. {{ book.product_id.discountPrice + " " }}
+              </b>
+              <span
+                ><s>Rs. {{ book.product_id.price }}</s></span
+              >
             </div>
             <div class="btnbox">
-              <v-icon class="bagBtn" @click="homeStore.decrement">mdi-minus</v-icon>
+              <v-icon class="bagBtn" @click="homeStore.decrement"
+                >mdi-minus</v-icon
+              >
               <div id="count">{{ book.quantityToBuy }}</div>
-              <v-icon class="bagBtn" @click="homeStore.increment(book.product_id._id)">mdi-plus</v-icon>
-              <div id="remove" @click="homeStore.removeFromCart(book._id)">Remove</div>
+              <v-icon
+                class="bagBtn"
+                @click="homeStore.increment(book.product_id._id)"
+                >mdi-plus</v-icon
+              >
+              <div id="remove" @click="homeStore.removeFromCart(book._id)">
+                Remove
+              </div>
             </div>
           </div>
         </div>
         <div id="placeOrder">
-          <v-btn color="blue">PLACE ORDER</v-btn>
+          <v-btn color="blue" v-if="placeOrderBtn" @click="placeOrder"
+            >PLACE ORDER</v-btn
+          >
         </div>
       </div>
     </div>
   </div>
   <div class="outer-div">
-    <div>
-      <div class="block"><h2><b>Address Details</b></h2></div>
-      <div class="block"><h2><b>Order Summary</b></h2></div>
+    <div class="outerBorder">
+      <div class="flex">
+        <h2 v-if="address"><b>Customer Details</b></h2>
+        <h2 v-else>
+          <b @click="placeOrderBtn = !placeOrderBtn">Address Details</b>
+        </h2>
+        <v-btn v-if="address || !placeOrderBtn" @click="placeOrderBtn=!placeOrderBtn" color="red" variant="outlined">
+          Add New Address
+        </v-btn>
+      </div>
+      <div v-if="!placeOrderBtn">
+        <div class="flex1">
+          <div>
+            <label for="name">Full Name</label>
+            <v-text-field
+              width="400px"
+              variant="outlined"
+              v-model="homeStore.cartName"
+            ></v-text-field>
+          </div>
+          <div>
+            <label for="name">Mobile Number</label>
+            <v-text-field
+              width="400px"
+              variant="outlined"
+              v-model="homeStore.cartMobile"
+            ></v-text-field>
+          </div>
+        </div>
+        <div class="address-details">
+          <div class="flex2">
+            <div>
+              <v-icon color="rgb(146, 76, 76)">mdi-record-circle</v-icon>
+            </div>
+            <div>
+              <span><h3>1. WORK</h3> </span
+              ><span style="color: rgb(146, 76, 76)"> Edit</span>
+            </div>
+          </div>
+          <div>
+            <label for="address">Address</label>
+            <v-textarea
+              v-model="homeStore.cartAddresss"
+              auto-grow
+              variant="outlined"
+              style="height: 180px"
+              disabled
+            ></v-textarea>
+            <div class="flex1 lower">
+              <div>
+                <label for="name">City / Town</label>
+                <v-text-field
+                  width="400px"
+                  variant="outlined"
+                  v-model="homeStore.cartCity"
+                  disabled
+                ></v-text-field>
+              </div>
+              <div>
+                <label for="name">State</label>
+                <v-text-field
+                  width="400px"
+                  variant="outlined"
+                  v-model="homeStore.cartState"
+                  disabled
+                ></v-text-field>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-if="checkoutBtn">
+          <div class="flex2">
+            <div>
+              <v-icon color="rgb(146, 76, 76)">mdi-circle-outline</v-icon>
+            </div>
+            <div>
+              <span><h3>2. HOME</h3> </span
+              ><span style="color: rgb(146, 76, 76)"> Edit</span>
+            </div>
+          </div>
+          <div>
+            <label for="address" id="address">Address</label>
+            <p>
+              <b
+                >{{ homeStore.cartAddresss }},{{ homeStore.cartCity }},{{
+                  homeStore.cartState
+                }}</b
+              >
+            </p>
+          </div>
+          <div id="placeOrder">
+            <v-btn color="blue" v-if="checkoutBtn" @click="checkoutBtn=!checkoutBtn"> CONTINUE </v-btn>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="outer-div">
+    <div class="outerBorder">
+      <div class="flex">
+        <h2><b>Order Summary</b></h2>
+      </div>
+      <div class="main-img" v-for="book in carts" :key="book._id" v-if="!checkoutBtn">
+        <div id="last-img">
+          <img 
+            src="../../assets/images/dmmt.png"
+            height="130px"
+            width="100px"
+            alt=""
+          />
+        </div>
+        <div id="last-img">
+          <h3>
+            <b>{{ book.product_id.bookName }}</b>
+          </h3>
+          <div>{{ book.product_id.author }}</div>
+          <div>
+            <b style="font-size: larger"
+              >Rs. {{ book.product_id.discountPrice + " " }}
+            </b>
+            <span
+              ><s>Rs. {{ book.product_id.price }}</s></span
+            >
+          </div>
+        </div>
+      </div>
+      <div id="placeOrder" v-if="!checkoutBtn">
+          <v-btn color="blue"> CHECKOUT </v-btn>
+        </div>
     </div>
   </div>
 </template>
@@ -86,6 +244,24 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
 }
+.flex1 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+.flex1 {
+  display: flex;
+}
+
+.custom-select {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 200px;
+  outline: none;
+  cursor: pointer;
+}
 .main-img {
   display: flex;
   margin-bottom: 5%;
@@ -93,6 +269,10 @@ onMounted(() => {
 }
 #count {
   font-size: x-large;
+  border: 1px solid rgb(208, 207, 207);
+  width: 50px;
+  padding-left: 6%;
+  height: 40px;
 }
 .bagBtn {
   background-color: #fafafa;
@@ -105,7 +285,7 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   margin-top: 8%;
-  width: 200px;
+  width: 250px;
 }
 #placeOrder {
   width: fit-content;
@@ -123,5 +303,18 @@ onMounted(() => {
   padding: 2%;
   width: 900px;
   margin-bottom: 2%;
+}
+.v-field__field {
+  height: fit-content;
+}
+.lower {
+  margin-top: -5%;
+}
+#last-img{
+  margin-top: 2%;
+  margin-bottom: -2%;
+}
+#address{
+  font-size: large;
 }
 </style>

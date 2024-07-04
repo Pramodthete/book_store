@@ -34,7 +34,7 @@ const fetchBooks = async () => {
 const getFeedbacks = async () => {
   try {
     const res = await getFeedbacksById(bookId);
-    feedbacks.value = res.data.result.reverse();
+    feedbacks.value = res.data.result.reverse().splice(0,4);
     console.log(res.data.result);
   } catch (error) {
     console.log(error);
@@ -73,6 +73,7 @@ onMounted(() => {
   fetchBooks();
   getFeedbacks();
   homeStore.getOneBook(bookId);
+  homeStore.getAllWishlistItems();
   document.body.style.backgroundColor = "white";
 });
 </script>
@@ -358,6 +359,10 @@ textarea {
 }
 .count {
   font-size: x-large;
+  border: 1px solid rgb(208, 207, 207);
+  width: 50px;
+  padding-left: 6%;
+  height: 40px;
 }
 .bagBtn {
   background-color: #fafafa;

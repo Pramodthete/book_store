@@ -32,7 +32,7 @@ const updatePage = (newPage:any) => {
           <span>({{ homeStore.count }} Items)</span>
         </div>
         <select @change="handleSort" class="custom-select" >
-          <option value="" disabled selected>Sort by relevance </option>
+          <option value="" disabled selected>Sort by relevance &nbsp;&nbsp;&nbsp;<span>&#8595</span>  </option>
           <option value="highToLow">High to Low Price</option>
           <option value="lowToHigh">Low to High Price</option>
         </select>
