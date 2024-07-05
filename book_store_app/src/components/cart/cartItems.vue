@@ -63,9 +63,9 @@ onMounted(() => {
               <b style="font-size: larger"
                 >Rs. {{ book.product_id.discountPrice + " " }}
               </b>
-              <span
-                ><s>Rs. {{ book.product_id.price }}</s></span
-              >
+              <span>
+                <s>Rs. {{ book.product_id.price }}</s>
+              </span>
             </div>
             <div class="btnbox">
               <v-icon class="bagBtn" @click="homeStore.decrement"
@@ -98,7 +98,12 @@ onMounted(() => {
         <h2 v-else>
           <b @click="placeOrderBtn = !placeOrderBtn">Address Details</b>
         </h2>
-        <v-btn v-if="address || !placeOrderBtn" @click="placeOrderBtn=!placeOrderBtn" color="red" variant="outlined">
+        <v-btn
+          v-if="address || !placeOrderBtn"
+          @click="placeOrderBtn = !placeOrderBtn"
+          color="red"
+          variant="outlined"
+        >
           Add New Address
         </v-btn>
       </div>
@@ -183,7 +188,13 @@ onMounted(() => {
             </p>
           </div>
           <div id="placeOrder">
-            <v-btn color="blue" v-if="checkoutBtn" @click="checkoutBtn=!checkoutBtn"> CONTINUE </v-btn>
+            <v-btn
+              color="blue"
+              v-if="checkoutBtn"
+              @click="checkoutBtn = !checkoutBtn"
+            >
+              CONTINUE
+            </v-btn>
           </div>
         </div>
       </div>
@@ -194,9 +205,14 @@ onMounted(() => {
       <div class="flex">
         <h2><b>Order Summary</b></h2>
       </div>
-      <div class="main-img" v-for="book in carts" :key="book._id" v-if="!checkoutBtn">
+      <div
+        class="main-img"
+        v-for="book in carts"
+        :key="book._id"
+        v-if="!checkoutBtn"
+      >
         <div id="last-img">
-          <img 
+          <img
             src="../../assets/images/dmmt.png"
             height="130px"
             width="100px"
@@ -219,8 +235,8 @@ onMounted(() => {
         </div>
       </div>
       <div id="placeOrder" v-if="!checkoutBtn">
-          <v-btn color="blue"> CHECKOUT </v-btn>
-        </div>
+        <v-btn color="blue"> CHECKOUT </v-btn>
+      </div>
     </div>
   </div>
 </template>
@@ -310,11 +326,11 @@ onMounted(() => {
 .lower {
   margin-top: -5%;
 }
-#last-img{
+#last-img {
   margin-top: 2%;
   margin-bottom: -2%;
 }
-#address{
+#address {
   font-size: large;
 }
 </style>
