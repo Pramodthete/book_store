@@ -35,14 +35,6 @@ export const useLoginStore = defineStore("login", () => {
     email: email.value,
     password: password.value,
   }));
-  // isFormValid() {
-  //   return (
-  //     email.value &&
-  //     password.value &&
-  //     emailRules.every((rule) => rule(email.value) === true) &&
-  //     passwordRules.every((rule) => rule(this.password) === true)
-  //   )
-  // }
 
   const validateForm = () => {
     const formElement = form.value as any;

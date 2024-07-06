@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeMount } from "vue";
 import { useRoute } from "vue-router";
 import { useHomeStore } from "@/stores/home";
 import {
@@ -7,7 +7,7 @@ import {
   getFeedbacksById,
   storeFeedback,
 } from "@/services/bookStoreService";
-import type { Book, Feedback, Cart } from "@/stores/home";
+import type {Book,Feedback } from "../../stores/types";
 
 const route = useRoute();
 const rating = ref(0);
@@ -42,7 +42,7 @@ const getFeedbacks = async () => {
 };
 
 const clickBag = () => {
-  homeStore.increment(bookId);
+  homeStore.increment(bookId,'1',1);
   bag.value = false;
 };
 
@@ -69,15 +69,13 @@ const addFeedbacks = () => {
   }
 };
 
-onMounted(() => {
+onBeforeMount(() => {
   fetchBooks();
   getFeedbacks();
   homeStore.getOneBook(bookId);
   homeStore.getAllWishlistItems();
-  document.body.style.backgroundColor = "white";
 });
 </script>
-
 
 
 <template>
@@ -110,13 +108,13 @@ onMounted(() => {
           </div>
           <div class="btnbox">
             
-            <v-icon class="bagBtn" v-if="homeStore.quantity > 0" @click="homeStore.decrement">
+            <v-icon class="bagBtn" v-if="homeStore.quantity > 0" @click="homeStore.decrement(homeStore.cartId)">
               mdi-minus
             </v-icon>
             <div class="count" v-if="homeStore.quantity > 0">
               {{ homeStore.quantity }}
             </div>
-            <v-icon class="bagBtn" v-if="homeStore.quantity > 0" @click="homeStore.increment(bookId)">
+            <v-icon class="bagBtn" v-if="homeStore.quantity > 0" @click="homeStore.increment(bookId,homeStore.cartId,homeStore.quantity)">
               mdi-plus
             </v-icon>
             <v-btn class="addBag" v-else @click="clickBag">

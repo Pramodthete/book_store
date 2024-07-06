@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CartItems from '@/components/CartItems.vue'
+import CartItems from '../components/cart/CartItems.vue'
 </script>
 
 <template>
@@ -7,5 +7,3 @@ import CartItems from '@/components/CartItems.vue'
     <CartItems />
   </main>
 </template>
-<style scoped>
-</style>

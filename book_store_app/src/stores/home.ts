@@ -1,4 +1,4 @@
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import {
@@ -7,67 +7,10 @@ import {
   getAllCartItems,
   deleteFromCart,
   get_wishlist_items,
+  addItemQty,
 } from "@/services/bookStoreService";
+import type { StoreState, Cart,Book,Wishlist } from "./types";
 
-export interface Book {
-  _id: string;
-  bookName?: string;
-  author?: string;
-  discountPrice?: number;
-  quantity?: number;
-  price?: number;
-  description?: string;
-}
-
-export interface Feedback {
-  _id: string;
-  book_id: string;
-  user_id: {
-    _id: string;
-    fullName: string;
-  };
-  rating: number;
-  comment: string;
-}
-
-export interface Address {
-  fullAddress: string;
-  city: string;
-  state: string;
-}
-
-export interface User {
-  address: Address[];
-  email: string;
-  fullName: string;
-  phone: string;
-}
-
-export interface Cart {
-  _id: string;
-  quantityToBuy: number;
-  product_id: {
-    _id: string;
-    author: string;
-    bookName: string;
-    description: string;
-    discountPrice: number;
-    price: number;
-    quantity: number;
-  };
-  user_id: User;
-}
-
-export interface StoreState {
-  page: number;
-  itemsPerPage: number;
-  count: number;
-  quantity: number;
-  book1: Book;
-  searchText: string;
-  originalBooks: Book[];
-  books: Book[];
-}
 
 export const useHomeStore = defineStore("home", () => {
   const page = ref<StoreState["page"]>(1);
@@ -81,13 +24,21 @@ export const useHomeStore = defineStore("home", () => {
   const books = ref<StoreState["books"]>([]);
   const allCartItems = ref<Cart[]>([]);
   const totalCarts = ref(0);
-  const totalWishlist = ref<Book>();
+  const totalWishlist = ref<Wishlist[]>([]);
   const cartBook = ref<Cart["product_id"] | null>(null);
   const cartName = ref<string | null>(null);
   const cartAddresss = ref<string | null>(null);
   const cartMobile = ref<string | null>(null);
   const cartCity = ref<string | null>(null);
   const cartState = ref<string | null>(null);
+  const cartId = ref<string>("");
+
+  watch(
+    () => quantity.value,
+    (newCartItemsQty) => {
+      quantity.value = newCartItemsQty;
+    }
+  );
 
   const goToDetails = (book: Book) => {
     setBook(book);
@@ -155,6 +106,22 @@ export const useHomeStore = defineStore("home", () => {
       try {
         const res = await addToCart(bookId);
         console.log(res);
+        fetchBooks();
+        fetchAllCarts();
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+  const addQuantity = async (cartId: string, qty: number) => {
+    const data = {
+      quantityToBuy: qty,
+    };
+    if (book1.value) {
+      try {
+        const res = await addItemQty(cartId, data);
+        console.log(res);
+        fetchAllCarts();
       } catch (error) {
         console.log(error);
       }
@@ -165,7 +132,9 @@ export const useHomeStore = defineStore("home", () => {
     if (book1.value) {
       try {
         const res = await deleteFromCart(cartId);
+        fetchBooks();
         fetchAllCarts();
+        getOneBook(cartId);
         console.log(res);
       } catch (error) {
         console.log(error);
@@ -173,20 +142,25 @@ export const useHomeStore = defineStore("home", () => {
     }
   };
 
-  const increment = (bookId: string) => {
-    if (book1.value && book1.value.quantity !== 0) {
+  const increment = (bookId: string, cartId: string, qty: number) => {
+    if (quantity.value == 0) {
       quantity.value = (quantity.value ?? 0) + 1;
       addIntoCart(bookId);
+      getOneBook(bookId);
+    } else if (quantity.value >= 0 && book1.value.quantity !== quantity.value) {
+      quantity.value = (quantity.value ?? 0) + 1;
+      addQuantity(cartId, quantity.value);
     } else {
       console.log("out of stock");
     }
   };
 
-  const decrement = () => {
-    if (book1.value && book1.value.quantity === 0) {
-      console.log("out of stock");
-    } else if ((quantity.value ?? 0) > 0) {
-      quantity.value = (quantity.value ?? 1) - 1;
+  const decrement = (cartId: string) => {
+    if (quantity.value === 1) {
+      removeFromCart(cartId);
+      fetchAllCarts();
+    } else if (quantity.value > 1) {
+      quantity.value = quantity.value - 1;
     }
   };
 
@@ -215,7 +189,10 @@ export const useHomeStore = defineStore("home", () => {
           if (user) {
             cartName.value = user.fullName || null;
             cartMobile.value = user.phone || null;
-            const address = user.address && user.address.length > 0 ? user.address[0] : undefined;
+            const address =
+              user.address && user.address.length > 0
+                ? user.address[0]
+                : undefined;
             if (address) {
               cartAddresss.value = address.fullAddress || null;
               cartCity.value = address.city || null;
@@ -236,7 +213,8 @@ export const useHomeStore = defineStore("home", () => {
     );
     cartBook.value = oneBook ? oneBook.product_id : null;
     quantity.value = oneBook?.quantityToBuy || 0;
-    console.log(cartBook.value);
+    cartId.value = oneBook?._id || "";
+    console.log(oneBook);
     return cartBook.value;
   };
 
@@ -255,6 +233,7 @@ export const useHomeStore = defineStore("home", () => {
     cartAddresss,
     cartCity,
     cartState,
+    cartId,
     removeFromCart,
     fetchBooks,
     goToDetails,
@@ -267,6 +246,8 @@ export const useHomeStore = defineStore("home", () => {
     fetchAllCarts,
     getOneBook,
     getAllWishlistItems,
+    addQuantity,
+    totalWishlist,
     paginatedBooks,
   };
 });

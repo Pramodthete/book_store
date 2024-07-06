@@ -19,6 +19,7 @@ const goToCart=()=>{
 
 onMounted(() => {
   homeStore.fetchAllCarts()
+  document.body.style.backgroundColor = "white";
 });
 
 </script>
@@ -30,7 +31,7 @@ onMounted(() => {
         <img src="@/assets/svgfiles/education.svg" alt="" />
       </div>
       <div class="bookstore-text">
-        <v-app-bar-title class="big-font">Bookstore</v-app-bar-title>
+        Bookstore
       </div>
       <div class="search">
         <v-text-field
@@ -115,6 +116,12 @@ onMounted(() => {
 .v-text-field .v-input__details {
   display: none !important;
 }
+.bookstore-text{
+  font-size: x-large;
+  color: rgb(240, 240, 240);
+  padding-bottom: 0.5%;
+  margin-left: 0.6%;
+}
 .imgbox {
   margin-left: 10%;
 }
@@ -166,6 +173,7 @@ onMounted(() => {
   }
   .search {
     margin-top: 5%;
+    /* width: 40px; */
   }
 
   .end-btn1 {
@@ -174,10 +182,13 @@ onMounted(() => {
   .end-btn2 {
     width: 50px !important;
   }
-  .pagination {
-    margin-left: 0%;
-    display: flex;
-    flex-direction: column;
+  .bookstore-text{
+  margin: 0;
+}
+@media screen and (max-width: 380px) {
+  .search {
+    width: 40px;
   }
+}
 }
 </style>

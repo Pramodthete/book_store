@@ -1,4 +1,4 @@
-import { getData,postData,deleteData } from "./axiosService"
+import { getData,postData,putData,deleteData } from "./axiosService"
 const token = localStorage.getItem('x-access-token')
 export const getAllBooks = () => {
     let url = `/get/book`
@@ -79,4 +79,17 @@ export const getAllBooks = () => {
       }
     }
     return getData(url, headersOptions)
+  }
+
+  export const addItemQty = (cartId:string,data:Object)=>{
+    console.log(data);
+    
+    let url = `/cart_item_quantity/${cartId}`
+    let headersOptions = {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': token
+      }
+    }
+    return putData(url,data, headersOptions)
   }

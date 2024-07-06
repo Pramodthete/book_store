@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from "vue";
-import { useHomeStore, type Cart } from "@/stores/home";
+import { useHomeStore } from "@/stores/home";
+import type { Cart } from "../../stores/types";
+
+import router from "@/router";
 
 const homeStore = useHomeStore();
 const items = ref(true);
@@ -22,10 +25,12 @@ const placeOrder = () => {
   address.value = !address.value;
   placeOrderBtn.value = !placeOrderBtn.value;
 };
+const checkout = () => {
+  router.push("/orderPlaced");
+};
 
 onMounted(() => {
   homeStore.fetchAllCarts();
-  document.body.style.backgroundColor = "white";
 });
 </script>
 
@@ -74,7 +79,13 @@ onMounted(() => {
               <div id="count">{{ book.quantityToBuy }}</div>
               <v-icon
                 class="bagBtn"
-                @click="homeStore.increment(book.product_id._id)"
+                @click="
+                  homeStore.increment(
+                    book.product_id._id,
+                    book._id,
+                    book.quantityToBuy
+                  )
+                "
                 >mdi-plus</v-icon
               >
               <div id="remove" @click="homeStore.removeFromCart(book._id)">
@@ -235,10 +246,11 @@ onMounted(() => {
         </div>
       </div>
       <div id="placeOrder" v-if="!checkoutBtn">
-        <v-btn color="blue"> CHECKOUT </v-btn>
+        <v-btn color="blue" @click="checkout"> CHECKOUT </v-btn>
       </div>
     </div>
   </div>
+  <br>
 </template>
 
 <style scoped>
@@ -249,6 +261,7 @@ onMounted(() => {
 .outer-div {
   display: flex;
   justify-content: center;
+  margin: 1%;
 }
 .outerBorder {
   border: 1px solid #707070;
@@ -332,5 +345,14 @@ onMounted(() => {
 }
 #address {
   font-size: large;
+}
+@media screen and (max-width: 700px) {
+  .breadCrumb {
+    margin-top: 12%;
+  }
+  .custom-select{
+    padding: 0;
+    width: fit-content;
+  }
 }
 </style>

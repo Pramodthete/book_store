@@ -6,10 +6,10 @@ import NewUser from "../views/NewUserView.vue";
 import BookDetails from "../views/BookDetailsView.vue";
 import { useSignupStore } from "@/stores/signUp";
 import BookHeader from "@/views/BookHeaderView.vue";
-
 import { useHomeStore } from "@/stores/home";
-import CartItems from "@/components/cart/cartItems.vue";
-
+import CartItems from "@/views/CartItemsView.vue";
+import OrderPlaced from "@/views/OrderPlacedView.vue";
+import Wishlist from "@/views/WishlistView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,22 +18,33 @@ const router = createRouter({
       path: "/books",
       name: "header",
       component: BookHeader,
-      children:[{
-        path: "/books",
-        name: "home",
-        component: HomeView,
-      },
-      {
-        path: "/bookDetails/:id",
-        name: "bookDetails",
-        component: BookDetails,
-      },
-      {
-        path: "/cartDetails",
-        name: "cartDetails",
-        component: CartItems
-      },
-    ]
+      children: [
+        {
+          path: "/books",
+          name: "home",
+          component: HomeView,
+        },
+        {
+          path: "/bookDetails/:id",
+          name: "bookDetails",
+          component: BookDetails,
+        },
+        {
+          path: "/cartDetails",
+          name: "cartDetails",
+          component: CartItems,
+        },
+        {
+          path: "/orderPlaced",
+          name: "orderPlaced",
+          component: OrderPlaced,
+        },
+        {
+          path: "/wishlist",
+          name: "wishlist",
+          component: Wishlist,
+        },
+      ],
     },
     {
       path: "/newUser",
@@ -52,38 +63,43 @@ const router = createRouter({
         },
       ],
     },
-    
+    {
+      path: "/",
+      redirect: "/books",
+    },
   ],
 });
 
 router.beforeEach((to, from, next) => {
   const signupStore = useSignupStore();
-  const homeStore = useHomeStore();
-  const token = localStorage.getItem('x-access-token');
+  const token = localStorage.getItem("x-access-token");
   const isAuthenticated = !!token;
-
-  if (!isAuthenticated && to.name !== 'login') {
-    return next({ name: 'login' }); 
-  }
 
   if (to.name === "signup") {
     signupStore.tab = 2;
-    signupStore.changeColor=true
+    signupStore.changeColor = true;
   }
-  if (to.path === "/") {
-    return next({name:'home'})
-  }
-  if (to.name === "bookDetails/:id") {
-    if(!isAuthenticated){
-      return next({ name: 'login' }); 
+
+  if (isAuthenticated) {
+    if (
+      to.name === "cartDetails" ||
+      to.name === "orderPlaced" ||
+      to.name === "wishlist" ||
+      to.name === "profile"
+    ) {
+      return next();
     }
-    const bookId = to.params.id;
-    if (!homeStore.book1._id || homeStore.book1._id !== bookId) {
-      console.log("Book not found in store, fetch or handle as needed.");
-      // Fetch book or handle the case when the book is not in store
+  } else {
+    if (
+      to.name === "cartDetails" ||
+      to.name === "orderPlaced" ||
+      to.name === "wishlist" ||
+      to.name === "profile"
+    ) {
+      return next({ name: "login" });
     }
   }
-  
+
   next();
 });
 
