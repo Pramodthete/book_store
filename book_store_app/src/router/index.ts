@@ -6,10 +6,10 @@ import NewUser from "../views/NewUserView.vue";
 import BookDetails from "../views/BookDetailsView.vue";
 import { useSignupStore } from "@/stores/signUp";
 import BookHeader from "@/views/BookHeaderView.vue";
-import { useHomeStore } from "@/stores/home";
-import CartItems from "@/views/CartItemsView.vue";
+import CartItems from "@/views/cartItemsView.vue";
 import OrderPlaced from "@/views/OrderPlacedView.vue";
 import Wishlist from "@/views/WishlistView.vue";
+import Profile from "@/views/ProfileView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,6 +43,11 @@ const router = createRouter({
           path: "/wishlist",
           name: "wishlist",
           component: Wishlist,
+        },
+        {
+          path: "/profile",
+          name: "profile",
+          component: Profile,
         },
       ],
     },

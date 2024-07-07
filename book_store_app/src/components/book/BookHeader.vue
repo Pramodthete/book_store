@@ -16,6 +16,9 @@ const logout = () => {
 const goToCart=()=>{
   router.push('/cartDetails')
 }
+const goToProfile=()=>{
+  router.push('/profile')
+}
 
 onMounted(() => {
   homeStore.fetchAllCarts()
@@ -61,7 +64,7 @@ onMounted(() => {
                 <v-list-item
                 >
                   <div><b>Welcome Pramod,</b></div>
-                  <v-btn variant="plain"><v-icon>mdi-account-outline</v-icon><span>Profile</span></v-btn><br>
+                  <v-btn variant="plain" @click="goToProfile"><v-icon>mdi-account-outline</v-icon><span>Profile</span></v-btn><br>
                   <v-btn variant="plain"><v-icon>mdi-cart-outline</v-icon><span>My Orders</span></v-btn><br>
                   <v-btn variant="plain"><v-icon>mdi-heart-outline</v-icon><span>My Wishlist</span></v-btn><br>
                 </v-list-item>
