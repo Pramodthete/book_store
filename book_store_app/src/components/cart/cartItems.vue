@@ -6,7 +6,7 @@ import type { Cart } from "../../stores/types";
 import router from "@/router";
 
 const homeStore = useHomeStore();
-const items = ref(true);
+const item = ref(true);
 const address = ref(false);
 const placeOrderBtn = ref(true);
 const checkoutBtn = ref(true);
@@ -17,8 +17,8 @@ carts.value = homeStore.allCartItems;
 
 watch(
   () => homeStore.allCartItems,
-  (newCartItems) => {
-    carts.value = newCartItems;
+  (newCartitem) => {
+    carts.value = newCartitem;
   }
 );
 
@@ -33,23 +33,35 @@ const checkout = () => {
 onMounted(() => {
   homeStore.fetchAllCarts();
 });
+
+const items=ref([
+        {
+          title: 'Home',
+          disabled: false,
+          href: 'books',
+        },{
+          title: `My Cart`,
+          disabled: false,
+          href: 'cartDetails',
+        }
+        ])
 </script>
 
 <template>
   <div class="breadCrumb">
-    <v-breadcrumbs :items="['Home', 'My cart']"></v-breadcrumbs>
+    <v-breadcrumbs :items></v-breadcrumbs>
   </div>
   <div class="outer-div">
     <div class="outerBorder">
       <div class="flex">
-        <h2 @click="items = !items">
+        <h2 @click="item = !item">
           <b>My Cart ({{ homeStore.allCartItems.length }})</b>
         </h2>
-        <select v-if="items" class="custom-select">
+        <select v-if="item" class="custom-select">
           <option value="">Use Current Location</option>
         </select>
       </div>
-      <div v-if="items">
+      <div v-if="item">
         <br />
         <div class="main-img" v-for="book in carts" :key="book._id">
           <div>

@@ -34,7 +34,6 @@ export interface Book {
   
   export interface Wishlist {
     _id: string;
-    quantityToBuy: number;
     product_id: {
       _id: string;
       author: string;

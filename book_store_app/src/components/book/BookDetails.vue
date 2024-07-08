@@ -7,7 +7,7 @@ import {
   getFeedbacksById,
   storeFeedback,
 } from "@/services/bookStoreService";
-import type {Book,Feedback } from "../../stores/types";
+import type { Book, Feedback } from "../../stores/types";
 
 const route = useRoute();
 const rating = ref(0);
@@ -18,6 +18,7 @@ const feedbacks = ref<Feedback[]>([]);
 const bookId = route.params.id as string;
 const feedbackText = ref<string>("");
 const updateKey = ref(0);
+const colorRed = ref(false)
 
 const homeStore = useHomeStore();
 
@@ -35,7 +36,7 @@ const fetchBooks = async () => {
 const getFeedbacks = async () => {
   try {
     const res = await getFeedbacksById(bookId);
-    feedbacks.value = res.data.result.reverse().splice(0,4);
+    feedbacks.value = res.data.result.reverse().splice(0, 4);
     console.log(res.data.result);
   } catch (error) {
     console.log(error);
@@ -44,7 +45,7 @@ const getFeedbacks = async () => {
 
 const clickBag = () => {
   bag.value = false;
-  homeStore.increment(bookId,homeStore.cartId,homeStore.quantity);
+  homeStore.increment(bookId, homeStore.cartId, homeStore.quantity);
 };
 
 const addFeedbacks = () => {
@@ -76,11 +77,26 @@ onMounted(() => {
   homeStore.getOneBook(bookId);
   homeStore.getAllWishlistItems();
 });
+
+const items = ref([
+  {
+    title: "Home",
+    disabled: false,
+    href: "books",
+  },
+  {
+    title: `My Book`,
+    disabled: false,
+    href: "bookDetails",
+  },
+]);
 </script>
 
-
 <template>
-  <v-breadcrumbs :items="['Home', `Book (1)`]"></v-breadcrumbs>
+  <div class="breadCrumb">
+    <v-breadcrumbs :items></v-breadcrumbs>
+  </div>
+
   <div class="outer-div">
     <div class="details" v-if="book1">
       <div class="img-flex">
@@ -108,21 +124,34 @@ onMounted(() => {
             />
           </div>
           <div class="btnbox">
-            
-            <v-icon class="bagBtn" v-if="homeStore.quantity > 0" @click="homeStore.decrement(homeStore.cartId,homeStore.quantity)">
+            <v-icon
+              class="bagBtn"
+              v-if="homeStore.quantity > 0"
+              @click="homeStore.decrement(homeStore.cartId, homeStore.quantity)"
+            >
               mdi-minus
             </v-icon>
             <div class="count" v-if="homeStore.quantity > 0">
               {{ homeStore.quantity }}
             </div>
-            <v-icon class="bagBtn" v-if="homeStore.quantity > 0" @click="homeStore.increment(bookId,homeStore.cartId,homeStore.quantity)">
+            <v-icon
+              class="bagBtn"
+              v-if="homeStore.quantity > 0"
+              @click="
+                homeStore.increment(
+                  bookId,
+                  homeStore.cartId,
+                  homeStore.quantity
+                )
+              "
+            >
               mdi-plus
             </v-icon>
             <v-btn class="addBag" :key="updateKey" v-else @click="clickBag">
               Add To Bag
             </v-btn>
-            <v-btn class="wishlist">
-              <v-icon>mdi-heart </v-icon> WISHLIST
+            <v-btn class="wishlist" @click="colorRed=!colorRed">
+              <v-icon :class="{'RedWishlist':colorRed}" >mdi-heart </v-icon> WISHLIST
             </v-btn>
           </div>
         </div>
@@ -172,34 +201,40 @@ onMounted(() => {
               hover
             ></v-rating>
           </div>
-          <textarea rows="3" v-model="feedbackText" placeholder="Write Your Review"></textarea>
+          <textarea
+            rows="3"
+            v-model="feedbackText"
+            placeholder="Write Your Review"
+          ></textarea>
           <div>
             <button id="submit-btn" @click="addFeedbacks">Submit</button>
           </div>
           <br /><br />
         </div>
-        <div v-for="feedback in feedbacks" :key="feedback._id">
-          <div class="namebox">
-            <div class="round">{{ feedback.user_id.fullName[0] }}</div>
-            <div class="name">{{ feedback.user_id.fullName }}</div>
-          </div>
-          <div>
-            <div>
-              <v-rating
-                readonly
-                active-color="#FDD835"
-                v-model="feedback.rating"
-                empty-icon="mdi-star-outline"
-                full-icon="mdi-star"
-                half-icon="mdi-star-half"
-                half-increments
-                hover
-              ></v-rating>
+        <div class="feedback">
+          <div v-for="feedback in feedbacks" :key="feedback._id">
+            <div class="namebox">
+              <div class="round">{{ feedback.user_id.fullName[0] }}</div>
+              <div class="name">{{ feedback.user_id.fullName }}</div>
             </div>
             <div>
-              {{ feedback.comment }}
+              <div>
+                <v-rating
+                  readonly
+                  active-color="#FDD835"
+                  v-model="feedback.rating"
+                  empty-icon="mdi-star-outline"
+                  full-icon="mdi-star"
+                  half-icon="mdi-star-half"
+                  half-increments
+                  hover
+                ></v-rating>
+              </div>
+              <div>
+                {{ feedback.comment }}
+              </div>
+              <br />
             </div>
-            <br />
           </div>
         </div>
       </div>
@@ -208,8 +243,10 @@ onMounted(() => {
   </div>
 </template>
 
-
 <style scoped>
+.breadCrumb {
+  margin-left: 15%;
+}
 @media screen and (max-width: 800px) {
   .outer-div {
     padding: 0;
@@ -237,9 +274,9 @@ onMounted(() => {
 }
 .outer-div {
   width: 100%;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 .details {
   display: flex;
@@ -369,5 +406,12 @@ textarea {
   height: 40px;
   width: 40px;
   border-radius: 50%;
+}
+.feedback {
+  height: 500px;
+  overflow-y: scroll;
+}
+.RedWishlist{
+  color: red;
 }
 </style>

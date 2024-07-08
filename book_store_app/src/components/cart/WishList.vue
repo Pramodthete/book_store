@@ -1,86 +1,74 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted, onBeforeMount } from "vue";
 import { useHomeStore } from "@/stores/home";
-import type { Wishlist } from "../../stores/types";
-import router from "@/router";
-const homeStore = useHomeStore();
-const list = ref<Wishlist[]>([]);
 
-list.value = homeStore.totalWishlist;
+const homeStore = useHomeStore();
 
 onMounted(() => {
   homeStore.getAllWishlistItems();
 });
+
+const items=ref([
+        {
+          title: 'Home',
+          disabled: false,
+          href: 'books',
+        },{
+          title: `My Wishlist`,
+          disabled: false,
+          href: 'wishlist',
+        }
+        ])
 </script>
 
 <template>
   <div class="breadCrumb">
-    <v-breadcrumbs :items="['Home', 'My Wishlist']"></v-breadcrumbs>
+    <v-breadcrumbs :items></v-breadcrumbs>
   </div>
   <div class="outer-div">
     <div class="outerBorder">
       <div>
         <h2>
-          <b>My Wishlist ({{ list.length }})</b>
+          <b>My Wishlist ({{ homeStore.totalWishlist.length }})</b>
         </h2>
       </div>
     </div>
     <div class="second-border">
-      <br />
-      <div class="main-img" v-for="book in list" :key="book._id">
-        <div>
-          <img
-            src="../../assets/images/dmmt.png"
-            height="130px"
-            width="100px"
-            alt=""
-          />
-        </div>
-        <div>
-          <h3>
-            <b>{{ book.product_id.bookName }}</b>
-          </h3>
-          <div>{{ book.product_id.author }}</div>
+      <div class="main-img" v-for="(book, index) in homeStore.totalWishlist" :key="book._id">
+        <div style="display: flex;gap: 20px;">
           <div>
-            <b style="font-size: larger"
-              >Rs. {{ book.product_id.discountPrice + " " }}
-            </b>
-            <span>
-              <s>Rs. {{ book.product_id.price }}</s>
-            </span>
+            <img
+              src="../../assets/images/dmmt.png"
+              height="130px"
+              width="100px"
+              alt=""
+            />
           </div>
-          <div class="btnbox">
-            <v-icon class="bagBtn" @click="homeStore.decrement"
-              >mdi-minus</v-icon
-            >
-            <div id="count">{{ book.quantityToBuy }}</div>
-            <v-icon
-              class="bagBtn"
-              @click="
-                homeStore.increment(
-                  book.product_id._id,
-                  book._id,
-                  book.quantityToBuy
-                )
-              "
-              >mdi-plus</v-icon
-            >
-            <div id="remove" @click="homeStore.removeFromCart(book._id)">
-              Remove
+          <div>
+            <h3>
+              <b>Book {{ index + 1 }}</b>
+            </h3>
+            <div>author</div>
+            <div>
+              <b style="font-size: larger">Rs 1500 </b>
+              <span>
+                <s>Rs 2000</s>
+              </span>
             </div>
           </div>
         </div>
         <div class="placeOrder">
-          <v-btn><v-icon>mdi-delete</v-icon></v-btn>
+          <v-btn variant="plain"><v-icon>mdi-delete</v-icon></v-btn>
         </div>
       </div>
     </div>
   </div>
+  <br><br>
 </template>
 
 <style scoped>
 .breadCrumb {
-  margin-left: 20%;
+  margin-left: 15%;
   margin-top: 3%;
 }
 .outer-div {
@@ -98,6 +86,13 @@ onMounted(() => {
 .second-border {
   border: 1px solid #707070;
   width: 1100px;
+  padding: 2%;
+}
+.main-img {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid black;
+  margin: 2%;
   padding: 2%;
 }
 
