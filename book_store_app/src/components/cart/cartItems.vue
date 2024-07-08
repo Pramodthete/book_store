@@ -10,6 +10,7 @@ const items = ref(true);
 const address = ref(false);
 const placeOrderBtn = ref(true);
 const checkoutBtn = ref(true);
+const select = ref(true);
 const carts = ref<Cart[]>([]);
 
 carts.value = homeStore.allCartItems;
@@ -73,7 +74,7 @@ onMounted(() => {
               </span>
             </div>
             <div class="btnbox">
-              <v-icon class="bagBtn" @click="homeStore.decrement"
+              <v-icon class="bagBtn" @click="homeStore.decrement(book._id,book.quantityToBuy)"
                 >mdi-minus</v-icon
               >
               <div id="count">{{ book.quantityToBuy }}</div>
@@ -139,8 +140,11 @@ onMounted(() => {
         </div>
         <div class="address-details">
           <div class="flex2">
-            <div>
-              <v-icon color="rgb(146, 76, 76)">mdi-record-circle</v-icon>
+            <div v-if="select">
+              <v-icon color="rgb(146, 76, 76)" @click="select=!select">mdi-record-circle</v-icon>
+            </div>
+            <div v-else>
+              <v-icon color="rgb(146, 76, 76)" @click="select=!select">mdi-circle-outline</v-icon>
             </div>
             <div>
               <span><h3>1. WORK</h3> </span
@@ -180,8 +184,11 @@ onMounted(() => {
         </div>
         <div v-if="checkoutBtn">
           <div class="flex2">
-            <div>
-              <v-icon color="rgb(146, 76, 76)">mdi-circle-outline</v-icon>
+            <div v-if="select">
+              <v-icon color="rgb(146, 76, 76)" @click="select=!select">mdi-circle-outline</v-icon>
+            </div>
+            <div v-else>
+              <v-icon color="rgb(146, 76, 76)" @click="select=!select">mdi-record-circle</v-icon>
             </div>
             <div>
               <span><h3>2. HOME</h3> </span
@@ -278,8 +285,9 @@ onMounted(() => {
   flex-wrap: wrap;
   justify-content: space-evenly;
 }
-.flex1 {
+.flex2 {
   display: flex;
+  gap: 10px;
 }
 
 .custom-select {
@@ -346,13 +354,27 @@ onMounted(() => {
 #address {
   font-size: large;
 }
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 600px) {
   .breadCrumb {
-    margin-top: 12%;
+    margin-top: 10%;
   }
   .custom-select{
     padding: 0;
     width: fit-content;
   }
+  #remove {
+  margin-left: 0%;
+}
+.outerBorder{
+  width: 100%;
+}
+.main-img {
+  gap: 1%;
+}
+.btnbox {
+  display: flex;
+  gap: 0;
+  width: 200px;
+}
 }
 </style>

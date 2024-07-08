@@ -3,7 +3,8 @@ import { useHomeStore } from "@/stores/home";
 import { ref } from "vue";
 
 const homeStore = useHomeStore();
-const radio = ref('Work')
+const radio = ref("Work");
+const pass = ref("Pass@123");
 </script>
 
 <template>
@@ -23,19 +24,36 @@ const radio = ref('Work')
         </h2>
         <div>
           <label for="name">Full Name</label>
-          <v-text-field variant="solo-filled"></v-text-field>
+          <v-text-field
+            v-model="homeStore.cartName"
+            disabled
+            variant="solo-filled"
+          ></v-text-field>
         </div>
         <div>
           <label for="name">Email Id</label>
-          <v-text-field variant="solo-filled"></v-text-field>
+          <v-text-field
+            v-model="homeStore.cartEmail"
+            disabled
+            variant="solo-filled"
+          ></v-text-field>
         </div>
         <div>
           <label for="name">Password</label>
-          <v-text-field variant="solo-filled"></v-text-field>
+          <v-text-field
+            v-model="pass"
+            type="password"
+            disabled
+            variant="solo-filled"
+          ></v-text-field>
         </div>
         <div>
           <label for="name">Mobile Number</label>
-          <v-text-field variant="solo-filled"></v-text-field>
+          <v-text-field
+            v-model="homeStore.cartMobile"
+            disabled
+            variant="solo-filled"
+          ></v-text-field>
         </div>
       </div>
       <div class="details">
@@ -82,28 +100,32 @@ const radio = ref('Work')
             <div>
               <div>Type</div>
               <div class="flex">
-                <div >
+                <div>
                   <v-radio
+                    v-model="radio"
                     color="red-darken-3"
+                    name="add"
                     label="Home"
                     value="Home"
                   ></v-radio>
                 </div>
                 <div>
-                  <v-radio v-model="radio"
+                  <v-radio
+                    v-model="radio"
                     color="red-darken-3"
+                    name="add"
                     label="Work"
                     value="Work"
                   ></v-radio>
-                  
                 </div>
                 <div>
                   <v-radio
+                    v-model="radio"
                     color="red-darken-3"
+                    name="add"
                     label="Other"
                     value="Other"
                   ></v-radio>
-                  
                 </div>
               </div>
             </div>
@@ -112,7 +134,7 @@ const radio = ref('Work')
       </div>
     </div>
   </div>
-  <br /><br>
+  <br /><br />
 </template>
 
 <style scoped>
@@ -143,7 +165,7 @@ const radio = ref('Work')
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  width:70%;
+  width: 70%;
 }
 .lower {
   margin-top: -5%;

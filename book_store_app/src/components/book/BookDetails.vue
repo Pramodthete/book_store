@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeMount } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useHomeStore } from "@/stores/home";
 import {
@@ -17,6 +17,7 @@ const books = ref<Book[]>([]);
 const feedbacks = ref<Feedback[]>([]);
 const bookId = route.params.id as string;
 const feedbackText = ref<string>("");
+const updateKey = ref(0);
 
 const homeStore = useHomeStore();
 
@@ -42,8 +43,8 @@ const getFeedbacks = async () => {
 };
 
 const clickBag = () => {
-  homeStore.increment(bookId,'1',1);
   bag.value = false;
+  homeStore.increment(bookId,homeStore.cartId,homeStore.quantity);
 };
 
 const addFeedbacks = () => {
@@ -69,7 +70,7 @@ const addFeedbacks = () => {
   }
 };
 
-onBeforeMount(() => {
+onMounted(() => {
   fetchBooks();
   getFeedbacks();
   homeStore.getOneBook(bookId);
@@ -79,8 +80,8 @@ onBeforeMount(() => {
 
 
 <template>
+  <v-breadcrumbs :items="['Home', `Book (1)`]"></v-breadcrumbs>
   <div class="outer-div">
-    <v-breadcrumbs :items="['Home', `Book (1)`]"></v-breadcrumbs>
     <div class="details" v-if="book1">
       <div class="img-flex">
         <div class="two-img">
@@ -108,7 +109,7 @@ onBeforeMount(() => {
           </div>
           <div class="btnbox">
             
-            <v-icon class="bagBtn" v-if="homeStore.quantity > 0" @click="homeStore.decrement(homeStore.cartId)">
+            <v-icon class="bagBtn" v-if="homeStore.quantity > 0" @click="homeStore.decrement(homeStore.cartId,homeStore.quantity)">
               mdi-minus
             </v-icon>
             <div class="count" v-if="homeStore.quantity > 0">
@@ -117,7 +118,7 @@ onBeforeMount(() => {
             <v-icon class="bagBtn" v-if="homeStore.quantity > 0" @click="homeStore.increment(bookId,homeStore.cartId,homeStore.quantity)">
               mdi-plus
             </v-icon>
-            <v-btn class="addBag" v-else @click="clickBag">
+            <v-btn class="addBag" :key="updateKey" v-else @click="clickBag">
               Add To Bag
             </v-btn>
             <v-btn class="wishlist">
@@ -212,7 +213,7 @@ onBeforeMount(() => {
 @media screen and (max-width: 800px) {
   .outer-div {
     padding: 0;
-    width: fit-content;
+    width: 100%;
   }
   .details {
     display: flex;
@@ -235,10 +236,10 @@ onBeforeMount(() => {
   height: fit-content;
 }
 .outer-div {
-  background-color: white;
-  height: 100%;
-  padding: 1rem 9rem;
   width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 .details {
   display: flex;
@@ -247,7 +248,7 @@ onBeforeMount(() => {
   gap: 50px;
 }
 .second-div {
-  width: 800px;
+  width: 100%;
 }
 .img-flex {
   display: flex;

@@ -29,6 +29,7 @@ export const useHomeStore = defineStore("home", () => {
   const cartName = ref<string | null>(null);
   const cartAddresss = ref<string | null>(null);
   const cartMobile = ref<string | null>(null);
+  const cartEmail = ref<string | null>(null);
   const cartCity = ref<string | null>(null);
   const cartState = ref<string | null>(null);
   const cartId = ref<string>("");
@@ -143,24 +144,29 @@ export const useHomeStore = defineStore("home", () => {
   };
 
   const increment = (bookId: string, cartId: string, qty: number) => {
-    if (quantity.value == 0) {
+    if (qty == 0) {
       quantity.value = (quantity.value ?? 0) + 1;
       addIntoCart(bookId);
-      getOneBook(bookId);
-    } else if (quantity.value >= 0 && book1.value.quantity !== quantity.value) {
-      quantity.value = (quantity.value ?? 0) + 1;
+    } else if (qty > 0) {
+      quantity.value = (qty ?? 0) + 1;
+      console.log(cartId);
+      
       addQuantity(cartId, quantity.value);
     } else {
       console.log("out of stock");
     }
   };
 
-  const decrement = (cartId: string) => {
-    if (quantity.value === 1) {
+  const decrement = (cartId: string, qty: number) => {
+    if (qty === 1) {
       removeFromCart(cartId);
       fetchAllCarts();
-    } else if (quantity.value > 1) {
-      quantity.value = quantity.value - 1;
+      console.log(qty);
+
+    } else if (qty > 1) {
+      console.log(qty);
+      quantity.value = qty - 1;
+      addQuantity(cartId, quantity.value);
     }
   };
 
@@ -189,6 +195,7 @@ export const useHomeStore = defineStore("home", () => {
           if (user) {
             cartName.value = user.fullName || null;
             cartMobile.value = user.phone || null;
+            cartEmail.value = user.email || null;
             const address =
               user.address && user.address.length > 0
                 ? user.address[0]
@@ -249,5 +256,6 @@ export const useHomeStore = defineStore("home", () => {
     addQuantity,
     totalWishlist,
     paginatedBooks,
+    cartEmail
   };
 });
