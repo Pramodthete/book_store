@@ -127,6 +127,7 @@ onMounted(() => {
   color: rgb(240, 240, 240);
   padding-bottom: 0.5%;
   margin-left: 0.6%;
+  cursor: pointer;
 }
 .imgbox {
   margin-left: 10%;
