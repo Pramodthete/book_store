@@ -1,8 +1,19 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onBeforeMount } from "vue";
 import { useHomeStore } from "@/stores/home";
+import { deleteFromWishlist } from "@/services/bookStoreService";
 
 const homeStore = useHomeStore();
+
+const deleteWishlistItem = (bookId:string)=>{
+  deleteFromWishlist(bookId).then((res)=>{
+    console.log(res);
+    homeStore.getAllWishlistItems();
+  }).catch((error)=>{
+    console.log(error);
+  })
+}
+
 
 onMounted(() => {
   homeStore.getAllWishlistItems();
@@ -46,19 +57,19 @@ const items=ref([
           </div>
           <div>
             <h3>
-              <b>Book {{ index + 1 }}</b>
+              <b>{{ book.product_id.bookName }}</b>
             </h3>
-            <div>author</div>
+            <div>{{ book.product_id.author }}</div>
             <div>
-              <b style="font-size: larger">Rs 1500 </b>
+              <b style="font-size: larger">Rs {{ book.product_id.discountPrice + ' ' }}</b>
               <span>
-                <s>Rs 2000</s>
+                <s>Rs  {{ book.product_id.price }}</s>
               </span>
             </div>
           </div>
         </div>
         <div class="placeOrder">
-          <v-btn variant="plain"><v-icon>mdi-delete</v-icon></v-btn>
+          <v-btn variant="plain" @click="deleteWishlistItem(book.product_id._id)"><v-icon>mdi-delete</v-icon></v-btn>
         </div>
       </div>
     </div>

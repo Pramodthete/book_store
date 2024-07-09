@@ -175,7 +175,7 @@ export const useHomeStore = defineStore("home", () => {
     get_wishlist_items(tk)
       .then((res) => {
         console.log(res.data.result);
-        totalWishlist.value = res.data.result;
+        totalWishlist.value = res.data.result.filter((book: { product_id: null; })=>book.product_id !== null);
       })
       .catch((error) => {
         console.log(error);

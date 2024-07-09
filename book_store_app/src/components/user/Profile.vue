@@ -5,15 +5,23 @@ import { ref } from "vue";
 const homeStore = useHomeStore();
 const radio = ref("Work");
 const pass = ref("Pass@123");
+const items=ref([
+        {
+          title: 'Home',
+          disabled: false,
+          href: 'books',
+        },{
+          title: `My Profile`,
+          disabled: false,
+          href: 'profile',
+        }
+        ])
 </script>
 
 <template>
   <div>
     <br />
-    <v-breadcrumbs
-      style="margin-left: 20%"
-      :items="['Home', `Profile`]"
-    ></v-breadcrumbs>
+    <v-breadcrumbs :items></v-breadcrumbs>
   </div>
   <div class="outer-div">
     <div class="outerBorder">

@@ -93,3 +93,26 @@ export const getAllBooks = () => {
     }
     return putData(url,data, headersOptions)
   }
+
+  export const deleteFromWishlist = (bookId:string) => {
+    let url = `/remove_wishlist_item/${bookId}`
+    let headersOptions = {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': token
+      }
+    }
+    return deleteData(url, headersOptions)
+  }
+
+  export const addItemToWishlist = (bookId:string)=>{
+    let url = `/add_wish_list/${bookId}`
+    let data={}
+    let headersOptions = {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': token
+      }
+    }
+    return postData(url,data, headersOptions)
+  }

@@ -36,7 +36,7 @@ onMounted(() => {
       <div class="imgbox">
         <img src="@/assets/svgfiles/education.svg" alt="" />
       </div>
-      <div class="bookstore-text">
+      <div class="bookstore-text" @click="router.push('/books')">
         Bookstore
       </div>
       <div class="search">

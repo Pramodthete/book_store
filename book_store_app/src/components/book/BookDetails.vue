@@ -6,6 +6,7 @@ import {
   getAllBooks,
   getFeedbacksById,
   storeFeedback,
+  addItemToWishlist
 } from "@/services/bookStoreService";
 import type { Book, Feedback } from "../../stores/types";
 
@@ -28,6 +29,17 @@ const fetchBooks = async () => {
     books.value = res.data.result;
     console.log(res.data.result);
     book1.value = books.value.find((b) => b._id === bookId) || null;
+      console.log(book1.value?._id);
+      const b=homeStore.totalWishlist.filter((book)=>book.product_id._id==book1.value?._id)
+      if(b.length !=0){
+        console.log(b);
+        
+         colorRed.value=true
+      }else{
+        colorRed.value=false
+      }
+      
+    
   } catch (error) {
     console.log(error);
   }
@@ -77,6 +89,15 @@ onMounted(() => {
   homeStore.getOneBook(bookId);
   homeStore.getAllWishlistItems();
 });
+
+const addToWishlist=(bookId:string)=>{
+  addItemToWishlist(bookId).then((res)=>{
+    colorRed.value=true
+    console.log(res);
+  }).catch((error)=>{
+    console.log(error);
+  })
+}
 
 const items = ref([
   {
@@ -150,7 +171,7 @@ const items = ref([
             <v-btn class="addBag" :key="updateKey" v-else @click="clickBag">
               Add To Bag
             </v-btn>
-            <v-btn class="wishlist" @click="colorRed=!colorRed">
+            <v-btn class="wishlist" @click="addToWishlist(book1._id)">
               <v-icon :class="{'RedWishlist':colorRed}" >mdi-heart </v-icon> WISHLIST
             </v-btn>
           </div>
