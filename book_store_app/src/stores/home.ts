@@ -147,6 +147,7 @@ export const useHomeStore = defineStore("home", () => {
     if (qty == 0) {
       quantity.value = (quantity.value ?? 0) + 1;
       addIntoCart(bookId);
+      getOneBook(bookId)
     } else if (qty > 0) {
       quantity.value = (qty ?? 0) + 1;
       console.log(cartId);

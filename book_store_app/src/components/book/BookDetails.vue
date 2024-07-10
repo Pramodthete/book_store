@@ -37,8 +37,7 @@ const fetchBooks = async () => {
          colorRed.value=true
       }else{
         colorRed.value=false
-      }
-      
+      } 
     
   } catch (error) {
     console.log(error);
@@ -267,7 +266,13 @@ const items = ref([
 <style scoped>
 .breadCrumb {
   margin-left: 15%;
+  margin-top: 2%;
 }
+.two-img {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+  }
 @media screen and (max-width: 800px) {
   .outer-div {
     padding: 0;
@@ -275,10 +280,23 @@ const items = ref([
   }
   .details {
     display: flex;
+    justify-content: center;
     flex-wrap: wrap;
+    margin: 1%;
   }
+  .breadCrumb {
+  margin-top: 5%;
 }
-@media screen and (max-width: 410px) {
+.img-flex {
+  display: flex;
+  justify-content: center;
+  gap:2px;
+}
+li{
+  margin-left: 4%;
+}
+}
+@media screen and (max-width: 400px) {
   .body {
     width: 100%;
   }
@@ -310,7 +328,7 @@ const items = ref([
 }
 .img-flex {
   display: flex;
-  gap: 5px;
+  gap: 0.5%;
 }
 .main-img {
   border: 1px solid rgb(211, 210, 210);
@@ -361,6 +379,9 @@ const items = ref([
     padding: 10px;
     width: 100vw;
   }
+  .breadCrumb {
+  margin-top: 12%;
+}
 }
 .strikeAmount {
   text-decoration: line-through;

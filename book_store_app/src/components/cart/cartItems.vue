@@ -385,7 +385,7 @@ const items=ref([
 }
 .btnbox {
   display: flex;
-  gap: 0;
+  justify-content: space-between;
   width: 200px;
 }
 }

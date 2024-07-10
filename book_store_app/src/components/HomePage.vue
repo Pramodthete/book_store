@@ -88,9 +88,10 @@ const updatePage = (newPage:any) => {
 .card {
   display: flex;
   flex-wrap: wrap;
-  gap: 60px;
+  justify-content: space-evenly;
+  row-gap: 30px;
   padding: 0rem 12rem;
-  padding-top: 20px;
+  padding-top: 1%;
 }
 .image {
   background-color: #f5f5f5;
@@ -115,50 +116,39 @@ const updatePage = (newPage:any) => {
   .imgbox {
     margin-left: 0%;
   }
+  .block {
+    width: 170px !important;
+    height: fit-content!important;
+  }
+  .image {
+    padding: 2%;
+  }
+  .content {
+  padding-top: 1%;
+  padding-left: 2%;
+}
   .end-btn {
     margin-right: 0%;
   }
   .search {
     margin-top: 5%;
   }
-
   .end-btn1 {
     width: 50px !important;
   }
   .end-btn2 {
     width: 50px !important;
   }
-  .pagination {
-    margin-left: 0%;
-    display: flex;
-    flex-direction: column;
-  }
-  .card {
-    gap: 1%;
-    padding: 0;
-  }
-  .block {
-    width: 185px !important;
-    height: fit-content;
-    margin-bottom: 1%;
-  }
-  .top {
-    padding: 0;
-    padding-top: 50px;
-    margin: 0;
-  }
-  .image img {
-    width: 80.4px;
-    height: 105px;
-  }
+  .custom-select {
+  padding: 0;
+  height: fit-content;
+}
 }
 @media screen and (max-width: 915px) {
-  .card {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1%;
+  
+  .top{
     padding: 0;
+    padding-top: 2rem;
   }
 }
 
@@ -195,7 +185,6 @@ const updatePage = (newPage:any) => {
   margin-left: 20%;
 }
 
-
 .custom-select {
   padding: 10px;
   font-size: 16px;
@@ -215,5 +204,13 @@ const updatePage = (newPage:any) => {
 
 .custom-select option:checked {
   background-color: #f0f0f0; 
+}
+
+@media screen and (max-width: 1510px) {
+  .card{
+    width: fit-content;
+    padding: 0;
+    margin: 2%;
+  }
 }
 </style>
