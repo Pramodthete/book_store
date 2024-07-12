@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { getAllCartItems } from "@/services/bookStoreService";
 import { useHomeStore } from "@/stores/home";
+import { useCartStore } from "@/stores/cart";
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 const homeStore = useHomeStore();
+const cartStore = useCartStore();
 const router = useRouter()
 
 const menu = ref(false);
@@ -24,7 +26,7 @@ const goToWishlist=()=>{
 }
 
 onMounted(() => {
-  homeStore.fetchAllCarts()
+  cartStore.fetchAllCarts()
   document.body.style.backgroundColor = "white";
 });
 
@@ -83,7 +85,7 @@ onMounted(() => {
         </div>
 
         <v-btn icon class="text-none end-btn2" @click="goToCart" stacked>
-          <v-badge color="white" :content="homeStore.totalCarts">
+          <v-badge color="white" :content="cartStore.totalCarts">
             <div class="item">
               <v-icon>mdi-cart-outline</v-icon>
               <div class="font">Cart</div>

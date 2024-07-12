@@ -69,7 +69,7 @@ const items=ref([
           </div>
         </div>
         <div class="placeOrder">
-          <v-btn variant="plain" @click="deleteWishlistItem(book.product_id._id)"><v-icon>mdi-delete</v-icon></v-btn>
+          <v-btn variant="plain" @click="deleteWishlistItem(book.product_id._id)"><v-icon>mdi-trash-can</v-icon></v-btn>
         </div>
       </div>
     </div>

@@ -2,11 +2,12 @@
 import { ref, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useHomeStore } from "@/stores/home";
+import { useCartStore } from "@/stores/cart";
 import {
   getAllBooks,
   getFeedbacksById,
   storeFeedback,
-  addItemToWishlist
+  addItemToWishlist,
 } from "@/services/bookStoreService";
 import type { Book, Feedback } from "../../stores/types";
 
@@ -19,9 +20,10 @@ const feedbacks = ref<Feedback[]>([]);
 const bookId = route.params.id as string;
 const feedbackText = ref<string>("");
 const updateKey = ref(0);
-const colorRed = ref(false)
+const colorRed = ref(false);
 
 const homeStore = useHomeStore();
+const cartStore = useCartStore();
 
 const fetchBooks = async () => {
   try {
@@ -29,16 +31,17 @@ const fetchBooks = async () => {
     books.value = res.data.result;
     console.log(res.data.result);
     book1.value = books.value.find((b) => b._id === bookId) || null;
-      console.log(book1.value?._id);
-      const b=homeStore.totalWishlist.filter((book)=>book.product_id._id==book1.value?._id)
-      if(b.length !=0){
-        console.log(b);
-        
-         colorRed.value=true
-      }else{
-        colorRed.value=false
-      } 
-    
+    console.log(book1.value?._id);
+    const b = homeStore.totalWishlist.filter(
+      (book) => book.product_id._id == book1.value?._id
+    );
+    if (b.length != 0) {
+      console.log(b);
+
+      colorRed.value = true;
+    } else {
+      colorRed.value = false;
+    }
   } catch (error) {
     console.log(error);
   }
@@ -56,7 +59,7 @@ const getFeedbacks = async () => {
 
 const clickBag = () => {
   bag.value = false;
-  homeStore.increment(bookId, homeStore.cartId, homeStore.quantity);
+  cartStore.increment(bookId, cartStore.cartId, cartStore.quantity);
 };
 
 const addFeedbacks = () => {
@@ -85,18 +88,20 @@ const addFeedbacks = () => {
 onMounted(() => {
   fetchBooks();
   getFeedbacks();
-  homeStore.getOneBook(bookId);
+  cartStore.getOneBook(bookId);
   homeStore.getAllWishlistItems();
 });
 
-const addToWishlist=(bookId:string)=>{
-  addItemToWishlist(bookId).then((res)=>{
-    colorRed.value=true
-    console.log(res);
-  }).catch((error)=>{
-    console.log(error);
-  })
-}
+const addToWishlist = (bookId: string) => {
+  addItemToWishlist(bookId)
+    .then((res) => {
+      colorRed.value = true;
+      console.log(res);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 
 const items = ref([
   {
@@ -146,22 +151,22 @@ const items = ref([
           <div class="btnbox">
             <v-icon
               class="bagBtn"
-              v-if="homeStore.quantity > 0"
-              @click="homeStore.decrement(homeStore.cartId, homeStore.quantity)"
+              v-if="cartStore.quantity > 0"
+              @click="cartStore.decrement(cartStore.cartId, cartStore.quantity)"
             >
               mdi-minus
             </v-icon>
-            <div class="count" v-if="homeStore.quantity > 0">
-              {{ homeStore.quantity }}
+            <div class="count" v-if="cartStore.quantity > 0">
+              {{ cartStore.quantity }}
             </div>
             <v-icon
               class="bagBtn"
-              v-if="homeStore.quantity > 0"
+              v-if="cartStore.quantity > 0"
               @click="
-                homeStore.increment(
+                cartStore.increment(
                   bookId,
-                  homeStore.cartId,
-                  homeStore.quantity
+                  cartStore.cartId,
+                  cartStore.quantity
                 )
               "
             >
@@ -171,29 +176,31 @@ const items = ref([
               Add To Bag
             </v-btn>
             <v-btn class="wishlist" @click="addToWishlist(book1._id)">
-              <v-icon :class="{'RedWishlist':colorRed}" >mdi-heart </v-icon> WISHLIST
+              <v-icon :class="{ RedWishlist: colorRed }">mdi-heart </v-icon>
+              WISHLIST
             </v-btn>
           </div>
         </div>
       </div>
       <div class="second-div">
-        <div>
-          <h2>
-            <b>{{ book1.bookName }}</b>
-          </h2>
+        <div class="content">
+          <div>
+            <h1>
+              <b>{{ book1.bookName }}</b>
+            </h1>
+          </div>
+          <div class="author">By {{ book1.author }}</div>
+          <div>
+            <span class="rating">
+              4.5 <v-icon class="starIcon" icon="mdi-star"></v-icon>
+            </span>
+            <span> (20)</span>
+          </div>
+          <div class="price">
+            Rs. {{ book1.discountPrice }}
+            <span class="strikeAmount">Rs. {{ book1.price }}</span>
+          </div>
         </div>
-        <div class="author">By {{ book1.author }}</div>
-        <div>
-          <span class="rating">
-            4.5 <v-icon class="starIcon" icon="mdi-star"></v-icon>
-          </span>
-          <span> (20)</span>
-        </div>
-        <div class="price">
-          Rs. {{ book1.discountPrice }}
-          <span class="strikeAmount">Rs. {{ book1.price }}</span>
-        </div>
-
         <v-divider></v-divider>
         <br />
         <div>
@@ -269,10 +276,10 @@ const items = ref([
   margin-top: 2%;
 }
 .two-img {
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-  }
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+}
 @media screen and (max-width: 800px) {
   .outer-div {
     padding: 0;
@@ -285,16 +292,19 @@ const items = ref([
     margin: 1%;
   }
   .breadCrumb {
-  margin-top: 5%;
-}
-.img-flex {
-  display: flex;
-  justify-content: center;
-  gap:2px;
-}
-li{
-  margin-left: 4%;
-}
+    margin-top: 5%;
+  }
+  .img-flex {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+  }
+  li {
+    margin-left: 4%;
+  }
+  .content {
+    text-align: center;
+  }
 }
 @media screen and (max-width: 400px) {
   .body {
@@ -380,8 +390,8 @@ li{
     width: 100vw;
   }
   .breadCrumb {
-  margin-top: 12%;
-}
+    margin-top: 12%;
+  }
 }
 .strikeAmount {
   text-decoration: line-through;
@@ -389,7 +399,7 @@ li{
   color: gray;
 }
 .price {
-  font-size: x-large;
+  font-size: xx-large;
   font-weight: bold;
   margin-bottom: 2%;
 }
@@ -453,7 +463,7 @@ textarea {
   height: 500px;
   overflow-y: scroll;
 }
-.RedWishlist{
+.RedWishlist {
   color: red;
 }
 </style>

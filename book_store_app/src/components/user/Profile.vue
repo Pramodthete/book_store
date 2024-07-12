@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useHomeStore } from "@/stores/home";
+import { useCartStore } from "@/stores/cart";
 import { ref } from "vue";
 
-const homeStore = useHomeStore();
+const cartStore = useCartStore();
 const radio = ref("Work");
 const pass = ref("Pass@123");
 const items=ref([
@@ -19,7 +19,7 @@ const items=ref([
 </script>
 
 <template>
-  <div>
+  <div style="margin-left: 20%;">
     <br />
     <v-breadcrumbs :items></v-breadcrumbs>
   </div>
@@ -33,7 +33,7 @@ const items=ref([
         <div>
           <label for="name">Full Name</label>
           <v-text-field
-            v-model="homeStore.cartName"
+            v-model="cartStore.cartName"
             disabled
             variant="solo-filled"
           ></v-text-field>
@@ -41,7 +41,7 @@ const items=ref([
         <div>
           <label for="name">Email Id</label>
           <v-text-field
-            v-model="homeStore.cartEmail"
+            v-model="cartStore.cartEmail"
             disabled
             variant="solo-filled"
           ></v-text-field>
@@ -58,7 +58,7 @@ const items=ref([
         <div>
           <label for="name">Mobile Number</label>
           <v-text-field
-            v-model="homeStore.cartMobile"
+            v-model="cartStore.cartMobile"
             disabled
             variant="solo-filled"
           ></v-text-field>
@@ -73,34 +73,32 @@ const items=ref([
           <div class="flex2">
             <div>
               <span><h3>1. WORK</h3> </span
-              ><span style="color: rgb(146, 76, 76)"> Edit</span>
+              >
             </div>
           </div>
           <div>
             <label for="address">Address</label>
             <v-textarea
-              v-model="homeStore.cartAddresss"
+              v-model="cartStore.cartAddresss"
               auto-grow
               variant="outlined"
               style="height: 180px"
               disabled
             ></v-textarea>
             <div class="flex1 lower">
-              <div>
+              <div style="width: 47%;">
                 <label for="name">City / Town</label>
                 <v-text-field
-                  width="340px"
                   variant="outlined"
-                  v-model="homeStore.cartCity"
+                  v-model="cartStore.cartCity"
                   disabled
                 ></v-text-field>
               </div>
-              <div>
+              <div style="width: 47%;">
                 <label for="name">State</label>
                 <v-text-field
-                  width="340px"
                   variant="outlined"
-                  v-model="homeStore.cartState"
+                  v-model="cartStore.cartState"
                   disabled
                 ></v-text-field>
               </div>
@@ -149,7 +147,7 @@ const items=ref([
 .outer-div {
   display: flex;
   justify-content: center;
-  margin: 1%;
+  margin: 0.5%;
 }
 .outerBorder {
   width: 900px;
@@ -165,9 +163,8 @@ const items=ref([
 .flex1 {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly;
+  justify-content: space-between;
   width: 100%;
-  gap: 12%;
 }
 .flex {
   display: flex;
@@ -193,6 +190,9 @@ const items=ref([
   }
   .v-text-field {
     width: 100%;
+  }
+  .lower {
+    margin-top: -12%;
   }
 }
 </style>

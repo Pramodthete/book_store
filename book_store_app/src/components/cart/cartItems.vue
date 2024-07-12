@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from "vue";
-import { useHomeStore } from "@/stores/home";
+import { useCartStore } from "@/stores/cart";
 import type { Cart } from "../../stores/types";
+import { useRouter } from "vue-router";
 
-import router from "@/router";
-
-const homeStore = useHomeStore();
+const cartStore = useCartStore();
+const router = useRouter();  // Import useRouter to handle navigation
 const item = ref(true);
 const address = ref(false);
 const placeOrderBtn = ref(true);
@@ -13,104 +13,88 @@ const checkoutBtn = ref(true);
 const select = ref(true);
 const carts = ref<Cart[]>([]);
 
-carts.value = homeStore.allCartItems;
+carts.value = cartStore.allCartItems;
 
+// Watch for changes in cart items
 watch(
-  () => homeStore.allCartItems,
-  (newCartitem) => {
-    carts.value = newCartitem;
+  () => cartStore.allCartItems,
+  (newCartItem) => {
+    carts.value = newCartItem;
   }
 );
 
+// Define methods for order placement and checkout
 const placeOrder = () => {
   address.value = !address.value;
   placeOrderBtn.value = !placeOrderBtn.value;
 };
+
 const checkout = () => {
   router.push("/orderPlaced");
 };
 
+// Fetch cart items when component is mounted
 onMounted(() => {
-  homeStore.fetchAllCarts();
+  cartStore.fetchAllCarts();
 });
 
-const items=ref([
-        {
-          title: 'Home',
-          disabled: false,
-          href: 'books',
-        },{
-          title: `My Cart`,
-          disabled: false,
-          href: 'cartDetails',
-        }
-        ])
+// Breadcrumb items for navigation
+const items = ref([
+  {
+    title: "Home",
+    disabled: false,
+    href: "books",
+  },
+  {
+    title: `My Cart`,
+    disabled: false,
+    href: "cartDetails",
+  },
+]);
 </script>
+
 
 <template>
   <div class="breadCrumb">
-    <v-breadcrumbs :items></v-breadcrumbs>
+    <v-breadcrumbs :items="items"></v-breadcrumbs>
   </div>
   <div class="outer-div">
     <div class="outerBorder">
       <div class="flex">
         <h2 @click="item = !item">
-          <b>My Cart ({{ homeStore.allCartItems.length }})</b>
+          <b>My Cart ({{ cartStore.allCartItems.length }})</b>
         </h2>
         <select v-if="item" class="custom-select">
-          <option value="">Use Current Location</option>
+          <option value="">BridgeLabz Solution LLP</option>
         </select>
       </div>
       <div v-if="item">
         <br />
         <div class="main-img" v-for="book in carts" :key="book._id">
           <div>
-            <img
-              src="../../assets/images/dmmt.png"
-              height="130px"
-              width="100px"
-              alt=""
-            />
+            <img src="../../assets/images/dmmt.png" height="130px" width="100px" alt="" />
           </div>
           <div>
-            <h3>
-              <b>{{ book.product_id.bookName }}</b>
-            </h3>
+            <h3><b>{{ book.product_id.bookName }}</b></h3>
             <div>{{ book.product_id.author }}</div>
             <div>
-              <b style="font-size: larger"
-                >Rs. {{ book.product_id.discountPrice + " " }}
-              </b>
-              <span>
-                <s>Rs. {{ book.product_id.price }}</s>
-              </span>
+              <b style="font-size: larger">Rs. {{ book.product_id.discountPrice }} </b>
+              <span><s>Rs. {{ book.product_id.price }}</s></span>
             </div>
             <div class="btnbox">
-              <v-icon class="bagBtn" @click="homeStore.decrement(book._id,book.quantityToBuy)"
-                >mdi-minus</v-icon
-              >
+              <v-icon class="bagBtn" @click="cartStore.decrement(book._id, book.quantityToBuy)">
+                mdi-minus
+              </v-icon>
               <div id="count">{{ book.quantityToBuy }}</div>
-              <v-icon
-                class="bagBtn"
-                @click="
-                  homeStore.increment(
-                    book.product_id._id,
-                    book._id,
-                    book.quantityToBuy
-                  )
-                "
-                >mdi-plus</v-icon
-              >
-              <div id="remove" @click="homeStore.removeFromCart(book._id)">
-                Remove
-              </div>
+              <v-icon class="bagBtn" @click="cartStore.increment(book.product_id._id, book._id, book.quantityToBuy)">
+                mdi-plus
+              </v-icon>
+              <div id="remove" @click="cartStore.removeFromCart(book._id)">Remove</div>
             </div>
           </div>
         </div>
         <div id="placeOrder">
-          <v-btn color="blue" v-if="placeOrderBtn" @click="placeOrder"
-            >PLACE ORDER</v-btn
-          >
+          <v-btn color="blue" v-if="placeOrderBtn" @click="placeOrder">PLACE ORDER</v-btn>
         </div>
       </div>
     </div>
@@ -133,61 +117,61 @@ const items=ref([
       </div>
       <div v-if="!placeOrderBtn">
         <div class="flex1">
-          <div>
+          <div style="width: 47%">
             <label for="name">Full Name</label>
             <v-text-field
-              width="400px"
               variant="outlined"
-              v-model="homeStore.cartName"
+              v-model="cartStore.cartName"
             ></v-text-field>
           </div>
-          <div>
+          <div style="width: 47%">
             <label for="name">Mobile Number</label>
             <v-text-field
-              width="400px"
               variant="outlined"
-              v-model="homeStore.cartMobile"
+              v-model="cartStore.cartMobile"
             ></v-text-field>
           </div>
         </div>
         <div class="address-details">
           <div class="flex2">
             <div v-if="select">
-              <v-icon color="rgb(146, 76, 76)" @click="select=!select">mdi-record-circle</v-icon>
+              <v-icon color="rgb(146, 76, 76)" @click="select = !select">
+                mdi-record-circle
+              </v-icon>
             </div>
             <div v-else>
-              <v-icon color="rgb(146, 76, 76)" @click="select=!select">mdi-circle-outline</v-icon>
+              <v-icon color="rgb(146, 76, 76)" @click="select = !select">
+                mdi-circle-outline
+              </v-icon>
             </div>
             <div>
-              <span><h3>1. WORK</h3> </span
-              ><span style="color: rgb(146, 76, 76)"> Edit</span>
+              <span style="font-size: larger">1. WORK </span>
+              <span style="color: rgb(146, 76, 76)"> Edit</span>
             </div>
           </div>
           <div>
             <label for="address">Address</label>
             <v-textarea
-              v-model="homeStore.cartAddresss"
+              v-model="cartStore.cartAddresss"
               auto-grow
               variant="outlined"
               style="height: 180px"
               disabled
             ></v-textarea>
             <div class="flex1 lower">
-              <div>
+              <div style="width: 45%">
                 <label for="name">City / Town</label>
                 <v-text-field
-                  width="400px"
                   variant="outlined"
-                  v-model="homeStore.cartCity"
+                  v-model="cartStore.cartCity"
                   disabled
                 ></v-text-field>
               </div>
-              <div>
+              <div style="width: 45%">
                 <label for="name">State</label>
                 <v-text-field
-                  width="400px"
                   variant="outlined"
-                  v-model="homeStore.cartState"
+                  v-model="cartStore.cartState"
                   disabled
                 ></v-text-field>
               </div>
@@ -197,24 +181,27 @@ const items=ref([
         <div v-if="checkoutBtn">
           <div class="flex2">
             <div v-if="select">
-              <v-icon color="rgb(146, 76, 76)" @click="select=!select">mdi-circle-outline</v-icon>
+              <v-icon color="rgb(146, 76, 76)" @click="select = !select">
+                mdi-circle-outline
+              </v-icon>
             </div>
             <div v-else>
-              <v-icon color="rgb(146, 76, 76)" @click="select=!select">mdi-record-circle</v-icon>
+              <v-icon color="rgb(146, 76, 76)" @click="select = !select">
+                mdi-record-circle
+              </v-icon>
             </div>
             <div>
-              <span><h3>2. HOME</h3> </span
-              ><span style="color: rgb(146, 76, 76)"> Edit</span>
+              <span style="font-size: larger">2. HOME </span>
+              <span style="color: rgb(146, 76, 76)"> Edit</span>
             </div>
           </div>
           <div>
             <label for="address" id="address">Address</label>
             <p>
-              <b
-                >{{ homeStore.cartAddresss }},{{ homeStore.cartCity }},{{
-                  homeStore.cartState
-                }}</b
-              >
+              <b>
+                {{ cartStore.cartAddresss }},{{ cartStore.cartCity }},
+                {{ cartStore.cartState }}
+              </b>
             </p>
           </div>
           <div id="placeOrder">
@@ -244,23 +231,17 @@ const items=ref([
         <div id="last-img">
           <img
             src="../../assets/images/dmmt.png"
-            height="130px"
-            width="100px"
+            height="120px"
+            width="90px"
             alt=""
           />
         </div>
         <div id="last-img">
-          <h3>
-            <b>{{ book.product_id.bookName }}</b>
-          </h3>
+          <h3><b>{{ book.product_id.bookName }}</b></h3>
           <div>{{ book.product_id.author }}</div>
           <div>
-            <b style="font-size: larger"
-              >Rs. {{ book.product_id.discountPrice + " " }}
-            </b>
-            <span
-              ><s>Rs. {{ book.product_id.price }}</s></span
-            >
+            <b style="font-size: larger">Rs. {{ book.product_id.discountPrice }} </b>
+            <span><s>Rs. {{ book.product_id.price }}</s></span>
           </div>
         </div>
       </div>
@@ -269,8 +250,9 @@ const items=ref([
       </div>
     </div>
   </div>
-  <br>
+  <br /><br>
 </template>
+
 
 <style scoped>
 .breadCrumb {
@@ -295,7 +277,7 @@ const items=ref([
 .flex1 {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly;
+  justify-content: space-between;
 }
 .flex2 {
   display: flex;
@@ -370,23 +352,37 @@ const items=ref([
   .breadCrumb {
     margin-top: 10%;
   }
-  .custom-select{
+  .custom-select {
     padding: 0;
     width: fit-content;
   }
   #remove {
-  margin-left: 0%;
+    margin-left: 5%;
+  }
+  .outerBorder {
+    width: 100%;
+  }
+  .main-img {
+    gap: 5%;
+  }
+  .btnbox {
+    display: flex;
+    gap: 10px;
+    width: 200px;
+  }
+  .lower {
+    margin-top: -14%;
+  }
 }
-.outerBorder{
-  width: 100%;
-}
-.main-img {
-  gap: 1%;
-}
-.btnbox {
-  display: flex;
-  justify-content: space-between;
-  width: 200px;
-}
+
+@media screen and (max-width: 400px){
+  .btnbox{
+    display: flex;
+    gap: 5%;
+    width: 100%;
+  }
+  #remove {
+    margin-left: 0%;
+  }
 }
 </style>

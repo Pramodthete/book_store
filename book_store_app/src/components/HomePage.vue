@@ -1,11 +1,20 @@
 <script setup lang="ts">
 import { useHomeStore } from "@/stores/home";
+import type { Book } from "@/stores/types";
 import {computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
 const homeStore = useHomeStore();
+const router = useRouter();
 
 onMounted(() => {
   homeStore.fetchBooks();
 });
+
+const goToDetails=(book: Book)=> {
+      homeStore.setBook(book);
+      
+      router.push(`/bookDetails/${book._id}`);
+    }
 
 const books = computed(() => homeStore.paginatedBooks);
 
@@ -29,18 +38,18 @@ const updatePage = (newPage:any) => {
       <div class="top">
         <div>
           <span class="books-text">Books</span>
-          <span>({{ homeStore.count }} Items)</span>
+          <span> ({{ homeStore.count+' ' }}Items)</span>
         </div>
         <select @change="handleSort" class="custom-select" >
-          <option value="" disabled selected>Sort by relevance &nbsp;&nbsp;&nbsp;<span>&#8595</span>  </option>
+          <option value="" disabled selected>Sort by relevance &nbsp;<span>&#8595</span></option>
           <option value="highToLow">High to Low Price</option>
           <option value="lowToHigh">Low to High Price</option>
         </select>
         
-      </div>
+      </div> 
       <div class="card">
         <div class="block" v-for="book in books" :key="book._id">
-          <div class="image" @click="homeStore.goToDetails(book)">
+          <div class="image" @click="goToDetails(book)">
             <img src="../assets/images/dmmt.png" alt="" />
           </div>
           <div class="content">
@@ -60,7 +69,6 @@ const updatePage = (newPage:any) => {
     </div>
   </div>
 </template>
-
 
 <style scoped>
 .noBorder{
@@ -99,6 +107,7 @@ const updatePage = (newPage:any) => {
   justify-content: center;
   padding: 20px;
   border-radius: 5px;
+  cursor: pointer;
 }
 .image img {
   width: 109.4px;
@@ -112,45 +121,7 @@ const updatePage = (newPage:any) => {
   font-size: small;
 }
 
-@media screen and (max-width: 600px) {
-  .imgbox {
-    margin-left: 0%;
-  }
-  .block {
-    width: 170px !important;
-    height: fit-content!important;
-  }
-  .image {
-    padding: 2%;
-  }
-  .content {
-  padding-top: 1%;
-  padding-left: 2%;
-}
-  .end-btn {
-    margin-right: 0%;
-  }
-  .search {
-    margin-top: 5%;
-  }
-  .end-btn1 {
-    width: 50px !important;
-  }
-  .end-btn2 {
-    width: 50px !important;
-  }
-  .custom-select {
-  padding: 0;
-  height: fit-content;
-}
-}
-@media screen and (max-width: 915px) {
-  
-  .top{
-    padding: 0;
-    padding-top: 2rem;
-  }
-}
+
 
 .block {
   width: 235px;
@@ -190,7 +161,7 @@ const updatePage = (newPage:any) => {
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  width: 200px;
+  width: 160px;
   outline: none; 
   cursor: pointer; 
 }
@@ -211,6 +182,41 @@ const updatePage = (newPage:any) => {
     width: fit-content;
     padding: 0;
     margin: 2%;
+  }
+}
+@media screen and (max-width: 915px) {
+  
+  .top{
+    padding: 0;
+    padding-top: 2rem;
+  }
+}
+@media screen and (max-width: 600px) {
+  .imgbox {
+    margin-left: 0%;
+  }
+  .block {
+    width: 170px !important;
+    height: fit-content!important;
+  }
+  .image {
+    padding: 2%;
+  }
+  .content {
+    padding-top: 1%;
+    padding-left: 2%;
+  }
+  .end-btn {
+    margin-right: 0%;
+  }
+  .search {
+    margin-top: 5%;
+  }
+  .end-btn1 {
+    width: 50px !important;
+  }
+  .end-btn2 {
+    width: 50px !important;
   }
 }
 </style>

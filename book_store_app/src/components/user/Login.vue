@@ -1,6 +1,65 @@
 <script setup lang="ts">
-import { useLoginStore } from "@/stores/login";
-const loginStore = useLoginStore();
+import { loginData } from "@/services/userService";
+import { computed, ref } from "vue";
+import { useRouter } from "vue-router";
+
+export type loginDataType = {
+  email:string,
+  password:string
+}
+
+  const visible = ref(false);
+  const email = ref('');
+  const password = ref('');
+  const router = useRouter(); 
+
+  const emailRules = [
+    (v: string) => !!v || "Email is required",
+    (v: string) =>
+      /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i.test(v) ||
+      "Must be a valid e-mail.",
+  ];
+
+  const passwordRules = [
+    (v: string) => !!v || "Enter password.",
+    (v: string) => /(?=.*[a-z])/.test(v) || "At least one lowercase letter.",
+    (v: string) => /(?=.*[A-Z])/.test(v) || "At least one UPPERCASE letter.",
+    (v: string) => /(?=.*\d)/.test(v) || "At least one digit.",
+    (v: string) =>
+      /(?=.*[@$!%*?&])/.test(v) || "At least one special character.",
+    (v: string) => (v && v.length >= 8) || "Minimum 8 characters.",
+  ];
+
+  computed(() => ({
+    email: email.value,
+    password: password.value,
+  }));
+
+  const resetForm = () => {
+    email.value = '';
+    password.value = '';
+  };
+
+  const login = () => {
+    console.log("Form is valid");
+    const data: loginDataType = {
+      email: email.value,
+      password: password.value,
+    };
+    console.log("data==>", data);
+
+    loginData(data)
+      .then((res) => {
+        localStorage.setItem("x-access-token", res.data.result.accessToken);
+        console.log(res);
+        resetForm();
+        router.push("/books"); 
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
 </script>
 
 <template>
@@ -11,8 +70,8 @@ const loginStore = useLoginStore();
         <div>
           <label for="email">Email Id</label>
           <v-text-field
-            v-model="loginStore.email"
-            :rules="loginStore.emailRules"
+            v-model="email"
+            :rules="emailRules"
             required
             variant="outlined"
           ></v-text-field>
@@ -20,18 +79,18 @@ const loginStore = useLoginStore();
         <div>
           <label for="password">Password</label>
           <v-text-field
-            v-model="loginStore.password"
-            :append-inner-icon="loginStore.visible ? 'mdi-eye' : 'mdi-eye-off'"
-            :type="loginStore.visible ? 'text' : 'password'"
-            @click:append-inner="loginStore.visible = !loginStore.visible"
-            :rules="loginStore.passwordRules"
+            v-model="password"
+            :append-inner-icon="visible ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="visible ? 'text' : 'password'"
+            @click:append-inner="visible = !visible"
+            :rules="passwordRules"
             variant="outlined"
             required
           ></v-text-field>
         </div>
         <div class="forgot-text">Forgot Password?</div>
         <div>
-          <v-btn block id="signupBtn" @click="loginStore.login">Login</v-btn>
+          <v-btn block id="signupBtn" @click="login">Login</v-btn>
         </div>
         <div>
           <v-divider id="divider"><b>OR</b></v-divider>
