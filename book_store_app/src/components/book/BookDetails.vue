@@ -238,7 +238,7 @@ const items = ref([
           </div>
           <br /><br />
         </div>
-        <div class="feedback">
+        <div>
           <div v-for="feedback in feedbacks" :key="feedback._id">
             <div class="namebox">
               <div class="round">{{ feedback.user_id.fullName[0] }}</div>
@@ -263,10 +263,19 @@ const items = ref([
               <br />
             </div>
           </div>
+          <br><br>
         </div>
       </div>
     </div>
-    <div v-else>Loading...</div>
+    <div v-else class="loading">
+      <v-progress-circular
+      :size="50"
+      :width="7"
+      color="primary"
+      indeterminate
+    ></v-progress-circular>
+      <h2>Loading...</h2>
+    </div>
   </div>
 </template>
 
@@ -459,11 +468,15 @@ textarea {
   width: 40px;
   border-radius: 50%;
 }
-.feedback {
-  height: 500px;
-  overflow-y: scroll;
-}
 .RedWishlist {
   color: red;
+}
+.loading{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20%;
+  padding-bottom: 10%;
+  gap: 2%;
 }
 </style>

@@ -34,7 +34,7 @@ const updatePage = (newPage:any) => {
 
 <template>
   <div style="background-color: white;">
-    <v-card class="mx-auto noBorder" max-width="448">
+    <v-card class="mx-auto noBorder" max-width="448" v-if="homeStore.count !==0">
       <div class="top">
         <div>
           <span class="books-text">Books</span>
@@ -64,6 +64,15 @@ const updatePage = (newPage:any) => {
         </div>
       </div>
     </v-card>
+    <div v-else class="loading" >
+      <v-progress-circular
+      :size="50"
+      :width="7"
+      color="primary"
+      indeterminate
+    ></v-progress-circular>
+      <h2>Fetching Books...</h2>
+    </div>
     <div style="height: 100px">
       <v-pagination :length="Math.ceil(homeStore.count / homeStore.itemsPerPage)" v-model="homeStore.page" @input="updatePage"></v-pagination>
     </div>
@@ -218,5 +227,13 @@ const updatePage = (newPage:any) => {
   .end-btn2 {
     width: 50px !important;
   }
+}
+.loading{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20%;
+  padding-bottom: 10%;
+  gap: 2%;
 }
 </style>
