@@ -335,6 +335,7 @@ const items = ref([
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  padding: 1%;
 }
 .details {
   display: flex;
@@ -475,7 +476,7 @@ textarea {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20%;
+  margin-top: 10%;
   padding-bottom: 10%;
   gap: 2%;
 }
