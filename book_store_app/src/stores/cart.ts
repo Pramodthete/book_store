@@ -5,7 +5,7 @@ import {
   deleteFromCart,
   addItemQty
 } from "@/services/bookStoreService";
-import type { Cart } from "./types";
+import type { Book, Cart } from "./types";
 import { useHomeStore } from "./home";
 
 export const useCartStore = defineStore("cart", {
@@ -21,6 +21,7 @@ export const useCartStore = defineStore("cart", {
     cartCity: null as string | null,
     cartState: null as string | null,
     cartId: "" as string,
+    totalPrice: 0
   }),
 
   getters: {
@@ -103,6 +104,11 @@ export const useCartStore = defineStore("cart", {
         this.quantity = qty - 1;
         this.addQuantity(cartId, this.quantity);
       }
+    },
+
+    continueBtnFun(book:Book){
+      console.log(book);
+      
     },
 
     async fetchAllCarts() {

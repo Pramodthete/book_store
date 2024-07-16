@@ -1,8 +1,9 @@
 export interface Book {
+    quantityToBuy: number;
     _id: string;
     bookName?: string;
     author?: string;
-    discountPrice?: number;
+    discountPrice?: number | undefined;
     quantity?: number;
     price?: number;
     description?: string;

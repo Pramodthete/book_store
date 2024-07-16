@@ -10,6 +10,7 @@ import {
   addItemToWishlist,
 } from "@/services/bookStoreService";
 import type { Book, Feedback } from "../../stores/types";
+import router from "@/router";
 
 const route = useRoute();
 const rating = ref(0);
@@ -103,23 +104,27 @@ const addToWishlist = (bookId: string) => {
     });
 };
 
+
 const items = ref([
   {
     title: "Home",
-    disabled: false,
-    href: "books",
+    disabled: false
   },
   {
     title: `My Book`,
-    disabled: false,
-    href: "bookDetails",
+    disabled: false
   },
 ]);
+
+
+const booksPush=()=>{
+  router.push('/books')
+}
 </script>
 
 <template>
   <div class="breadCrumb">
-    <v-breadcrumbs :items></v-breadcrumbs>
+    <v-breadcrumbs @click="booksPush" :items ></v-breadcrumbs>
   </div>
 
   <div class="outer-div">

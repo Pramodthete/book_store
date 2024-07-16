@@ -2,6 +2,7 @@
 import { ref, watch, onMounted, onBeforeMount } from "vue";
 import { useHomeStore } from "@/stores/home";
 import { deleteFromWishlist } from "@/services/bookStoreService";
+import router from "@/router";
 
 const homeStore = useHomeStore();
 
@@ -23,18 +24,20 @@ const items=ref([
         {
           title: 'Home',
           disabled: false,
-          href: 'books',
         },{
           title: `My Wishlist`,
           disabled: false,
-          href: 'wishlist',
         }
         ])
+        
+const booksPush=()=>{
+  router.push('/books')
+}
 </script>
 
 <template>
   <div class="breadCrumb">
-    <v-breadcrumbs :items></v-breadcrumbs>
+    <v-breadcrumbs @click="booksPush" :items></v-breadcrumbs>
   </div>
   <div class="outer-div">
     <div class="outerBorder">

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from "vue";
 import { useCartStore } from "@/stores/cart";
-import type { Cart } from "../../stores/types";
+import type { Book, Cart } from "../../stores/types";
 import { useRouter } from "vue-router";
+import { loginData } from "@/services/userService";
 
 const cartStore = useCartStore();
 const router = useRouter();  // Import useRouter to handle navigation
@@ -11,6 +12,7 @@ const address = ref(false);
 const placeOrderBtn = ref(true);
 const checkoutBtn = ref(true);
 const select = ref(true);
+
 const carts = ref<Cart[]>([]);
 
 carts.value = cartStore.allCartItems;
@@ -43,20 +45,23 @@ const items = ref([
   {
     title: "Home",
     disabled: false,
-    href: "books",
   },
   {
     title: `My Cart`,
     disabled: false,
-    href: "cartDetails",
   },
 ]);
+
+const booksPush=()=>{
+  router.push('/books')
+}
+
 </script>
 
 
 <template>
   <div class="breadCrumb">
-    <v-breadcrumbs :items="items"></v-breadcrumbs>
+    <v-breadcrumbs @click="booksPush" :items="items"></v-breadcrumbs>
   </div>
   <div class="outer-div">
     <div class="outerBorder">
@@ -81,7 +86,7 @@ const items = ref([
               <b style="font-size: larger">Rs. {{ book.product_id.discountPrice }} </b>
               <span><s>Rs. {{ book.product_id.price }}</s></span>
             </div>
-            <div class="btnbox">
+            <div class="btnbox" @mouseover="cartStore.continueBtnFun(book)">
               <v-icon class="bagBtn" @click="cartStore.decrement(book._id, book.quantityToBuy)">
                 mdi-minus
               </v-icon>
@@ -208,7 +213,7 @@ const items = ref([
             <v-btn
               color="blue"
               v-if="checkoutBtn"
-              @click="checkoutBtn = !checkoutBtn"
+              @click="checkoutBtn=!checkoutBtn"
             >
               CONTINUE
             </v-btn>
@@ -243,8 +248,15 @@ const items = ref([
             <b style="font-size: larger">Rs. {{ book.product_id.discountPrice }} </b>
             <span><s>Rs. {{ book.product_id.price }}</s></span>
           </div>
+          <div>
+            Quantity: {{ book.quantityToBuy }}
+          </div>
         </div>
       </div>
+      <div>
+        Total Price: {{ cartStore.totalPrice }}
+      </div>
+
       <div id="placeOrder" v-if="!checkoutBtn">
         <v-btn color="blue" @click="checkout"> CHECKOUT </v-btn>
       </div>
