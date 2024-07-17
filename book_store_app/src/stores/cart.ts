@@ -7,6 +7,7 @@ import {
 } from "@/services/bookStoreService";
 import type { Book, Cart } from "./types";
 import { useHomeStore } from "./home";
+import { loginData } from "@/services/userService";
 
 export const useCartStore = defineStore("cart", {
   state: () => ({
@@ -106,10 +107,6 @@ export const useCartStore = defineStore("cart", {
       }
     },
 
-    continueBtnFun(book:Book){
-      console.log(book);
-      
-    },
 
     async fetchAllCarts() {
       const tk = localStorage.getItem("x-access-token");
@@ -118,7 +115,11 @@ export const useCartStore = defineStore("cart", {
         console.log(res.data.result);
         this.totalCarts = res.data.result.length;
         this.allCartItems = res.data.result;
-
+        
+        this.totalPrice = this.allCartItems.reduce((sum, book) => {
+          return sum + (book.quantityToBuy * book.product_id.discountPrice);
+      }, 0);
+      
         if (this.allCartItems.length > 0) {
           const user = this.allCartItems[0].user_id;
           if (user) {

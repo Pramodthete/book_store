@@ -45,6 +45,7 @@ const toBooks=()=>{
         <v-btn @click="toBooks" color="blue">CONTINUE SHOPPING</v-btn>
     </div>
   </div>
+  <br><br>
 </template>
 
 <style scoped>

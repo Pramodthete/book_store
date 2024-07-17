@@ -86,7 +86,7 @@ const booksPush=()=>{
               <b style="font-size: larger">Rs. {{ book.product_id.discountPrice }} </b>
               <span><s>Rs. {{ book.product_id.price }}</s></span>
             </div>
-            <div class="btnbox" @mouseover="cartStore.continueBtnFun(book)">
+            <div class="btnbox">
               <v-icon class="bagBtn" @click="cartStore.decrement(book._id, book.quantityToBuy)">
                 mdi-minus
               </v-icon>
@@ -113,7 +113,6 @@ const booksPush=()=>{
         </h2>
         <v-btn
           v-if="address || !placeOrderBtn"
-          @click="placeOrderBtn = !placeOrderBtn"
           color="red"
           variant="outlined"
         >
@@ -253,8 +252,9 @@ const booksPush=()=>{
           </div>
         </div>
       </div>
+      <v-divider></v-divider>
       <div>
-        Total Price: {{ cartStore.totalPrice }}
+        <h2>Total Price: <b>Rs. {{ cartStore.totalPrice }}</b></h2>
       </div>
 
       <div id="placeOrder" v-if="!checkoutBtn">
